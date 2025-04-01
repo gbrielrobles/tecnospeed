@@ -12,6 +12,7 @@
     "concurrently": "^9.1.2"
   },
   "dependencies": {
+    "class-transformer": "^0.5.1",
     "prisma": "^6.5.0"
   }
 }
