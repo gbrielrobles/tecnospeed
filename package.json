@@ -10,5 +10,8 @@
   "description": "",
   "devDependencies": {
     "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "prisma": "^6.5.0"
   }
 }
