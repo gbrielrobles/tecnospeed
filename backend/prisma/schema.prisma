@@ -9,7 +9,8 @@ datasource db {
 }
 
 model Bank {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
+  code     String   @unique
   name      String  
   cnabs     String 
   createdAt DateTime @default(now())
@@ -32,6 +33,7 @@ model ProductByBank {
 
 model Product {
   id        String   @id @default(cuid())
+  name     String
   description      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

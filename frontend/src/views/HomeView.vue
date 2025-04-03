@@ -31,6 +31,7 @@ import DropdownValidation from '@/components/Dropdowns/DropdownValidation.vue'
 import AppHeader from '@/components/AppHeader.vue'
 
 export default {
+  name: 'HomeView',
   components: {
     DropdownBank,
     DropdownProducts,

@@ -4,10 +4,10 @@
       <span class="step-number">1</span>
       <div class="header-content">
         <div class="dropdown-title">Selecionar um Banco (Instituição Bancária)</div>
-        <div class="selected-value" v-if="selectedBank">
+        <div class="selected-value">
           {{ selectedBank }}
         </div>
-        <div class="dropdown-subtitle" v-else>
+        <div class="dropdown-subtitle">
           Selecione um banco para criar uma nova carta de VAN
         </div>
       </div>

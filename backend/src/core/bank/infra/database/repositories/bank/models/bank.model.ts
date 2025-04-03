@@ -1,5 +1,6 @@
 export class BankModel {
     id: string;
+    code: string;
     name: string;
     createdAt: Date;
     updatedAt: Date;
@@ -10,6 +11,7 @@ export class BankModelWithProducts {
     name: string;
     cnab: string;
     products: ProductsModel[];
+    code : string;
 }
 
 export class ProductsModel {
