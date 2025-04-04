@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { GetAllBankUseCase } from 'src/core/bank/application/get-all/usecase';
+import { GetAllBankUseCase } from 'core/bank/application/get-all/usecase';
 
 @Controller('bank')
 export class GetAllBankController {

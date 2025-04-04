@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { BankRepository } from '../../domain/port/repositories/bank.repository';
 import { GetBankByIdOutput } from './output';
-import { required } from 'src/utils/required';
 import { BankNotFoundException } from '../../domain/exceptions/bank-notfound.exception';
-import { have } from 'src/utils/have';
 import { CnabNotResgitredException } from '../../domain/exceptions/cnab-notregistred.exception';
 import { plainToInstance } from 'class-transformer';
+import { required } from 'utils/required';
+import { have } from 'utils/have';
+
+
 
 @Injectable()
 export class GetByIdBankUsecase {

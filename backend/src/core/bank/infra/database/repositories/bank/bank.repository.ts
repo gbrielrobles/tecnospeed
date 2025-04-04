@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaAdapter } from '../../prisma/adapter';
 import { BankModel, BankModelWithProducts } from './models/bank.model';
-import { BankRepository } from 'src/core/bank/domain/port/repositories/bank.repository';
 import { plainToInstance } from 'class-transformer';
+import { BankRepository } from 'core/bank/domain/port/repositories/bank.repository';
 
 @Injectable()
 export class BankRepositoryImpl implements BankRepository {
@@ -11,15 +11,15 @@ export class BankRepositoryImpl implements BankRepository {
   async findAll(): Promise<BankModel[]> {
     const result = await this.prisma.bank.findMany();
     return (
-      result.map((bank) =>
-        plainToInstance(BankModel, {
-          id: bank.id,
-          name: bank.name,
+      result.map((bank): BankModel => {
+        return {
           code: bank.code,
           createdAt: bank.createdAt,
-          updatedAt: bank.updatedAt,
-        }),
-      ) ?? []
+          id: bank.id,
+          name: bank.name,
+          updatedAt: bank.updatedAt 
+        }
+      }) ?? []
     );
   }
 

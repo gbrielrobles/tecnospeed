@@ -1,14 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { Bank } from "../../domain/bank";
-import { BankRepository } from "../../domain/port/repositories/bank.repository";
-import { GetAllBankOutput } from "./output";
+import { Injectable } from '@nestjs/common';
+import { BankRepository } from '../../domain/port/repositories/bank.repository';
+import { GetAllBankOutput } from './output';
 
-@Injectable ()
+@Injectable()
 export class GetAllBankUseCase {
-    constructor(private readonly repository :BankRepository ) {}
+  constructor(private readonly repository: BankRepository) {}
 
-    async execute() : Promise<GetAllBankOutput[]> {
-        return await this.repository.findAll()
-    }
-
+  async execute(): Promise<GetAllBankOutput[]> {
+    return await this.repository.findAll();
+  }
 }

@@ -1,7 +1,4 @@
-import {
-  BankModel,
-  BankModelWithProducts,
-} from 'src/core/bank/infra/database/repositories/bank/models/bank.model';
+import { BankModel, BankModelWithProducts } from "../../../infra/database/repositories/bank/models/bank.model";
 
 export abstract class BankRepository {
   abstract findAll(): Promise<BankModel[]>;
