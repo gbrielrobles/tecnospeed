@@ -5,9 +5,8 @@
   "scripts": {
     "dev": "vite",
     "serve": "vite preview",
-    "build": "vite build",
-    "lint": "vue-cli-service lint"
-  },
+    "build": "vite build"
+   },
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.3",
     "core-js": "^3.8.3",
