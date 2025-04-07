@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "vite",
+    "start": "vite",
     "serve": "vite preview",
     "build": "vite build"
-   },
+  },
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.3",
     "core-js": "^3.8.3",

@@ -145,7 +145,7 @@
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-.bank-select {
+.select {
   width: 30%;
   padding: var(--space-md);
   border: 1px solid var(--gray-300);
@@ -162,7 +162,7 @@
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-.bank-select:focus {
+.select:focus {
   outline: none;
   border-color: var(--primary-blue);
   box-shadow: 0 0 0 2px rgba(3, 83, 179, 0.2);
@@ -338,4 +338,94 @@
 
 .secondary-button:hover {
   background-color: var(--gray-300);
+}
+/* -------- FORMULÁRIO CNAB240 -------- */
+
+/* Estilo dos inputs */
+.form-input {
+  width: 100%;
+  padding: var(--space-md);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  transition: all 0.2s ease;
+  background-color: var(--white);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px rgba(3, 83, 179, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--gray-400);
+}
+
+.form-input[required] {
+  border-left: 3px solid var(--primary-blue);
+  padding-left: calc(var(--space-md) - 3px);
+}
+
+.form-input.error {
+  border-color: #e53e3e;
+}
+
+/* Labels */
+.form-group label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+/* Grupos e seções */
+.form-section {
+  margin-bottom: var(--space-xl);
+}
+
+.form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.input-group {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.input-group .form-input {
+  flex: 1;
+}
+
+.input-small {
+  max-width: 60px;
+}
+
+/* Estilo para selects */
+select.form-input {
+  padding: var(--space-md);
+  height: 42px;
+}
+
+/* Grid do formulário */
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.form-row {
+  display: flex;
+  gap: var(--space-lg);
+}
+
+.input-group .form-group {
+  margin-bottom: 0;
+}
+
+.form-group {
+  flex: 1;
+  margin-bottom: 0;
 }
