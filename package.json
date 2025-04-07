@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start:dev": "concurrently \" cd backend && npm run start\" \"cd frontend && npm run start\""
+    "start:dev": "concurrently \" cd backend && yarn run start\" \"cd frontend && yarn run dev\"",
+    "install:dependecy": "concurrently \" cd backend && yarn install \" \" cd frontend && yarn install\""
   },
   "author": "",
   "license": "ISC",

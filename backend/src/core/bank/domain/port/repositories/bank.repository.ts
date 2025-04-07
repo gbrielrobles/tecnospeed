@@ -1,7 +1,6 @@
-import { GetBankByIdOutput } from "src/core/bank/application/by-id/output";
-import { GetAllBankOutput } from "src/core/bank/application/get-all/output";
+import { BankModel, BankModelWithProducts } from "../../../infra/database/repositories/bank/models/bank.model";
 
 export abstract class BankRepository {
-    abstract findAll(): Promise<GetAllBankOutput[]>;
-    abstract findById(id: string): Promise<GetBankByIdOutput>;
+  abstract findAll(): Promise<BankModel[]>;
+  abstract findById(id: string): Promise<BankModelWithProducts>;
 }
