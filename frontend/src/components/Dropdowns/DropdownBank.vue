@@ -20,9 +20,9 @@
         <option 
           v-for="bank in banks" 
           :key="bank.code" 
-          :value="bank.label"
+          :value="bank.name"
         >
-          {{ bank.label }}
+          {{ bank.name }}
         </option>
       </select>
       
@@ -40,19 +40,16 @@
 </template>
 
 <script>
+import { useBank } from '@/hooks/bank';
+console.log(useBank)
+
 export default {
   name: 'DropdownBank',
   data() {
     return {
       isOpen: true,
       selectedBank: '',
-      banks: [
-        { code: '001', label: '001 - Banco do Brasil' },
-        { code: '104', label: '104 - Caixa Econômica Federal' },
-        { code: '237', label: '237 - Bradesco' },
-        { code: '341', label: '341 - Itaú' },
-        { code: '033', label: '033 - Santander' }
-      ]
+      bank: [],
     }
   },
   methods: {
@@ -62,6 +59,15 @@ export default {
     handleNext() {
       this.$emit('next');
       this.$emit('update-bank', this.selectedBank);
+    }
+  },
+  setup() {
+    const { banks, error, loading } = useBank();
+
+    return {
+      banks,
+      error,
+      loading
     }
   }
 }
