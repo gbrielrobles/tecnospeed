@@ -9,6 +9,7 @@
 -- DropForeignKey
 ALTER TABLE "ProductByBank" DROP CONSTRAINT "ProductByBank_bank_id_fkey";
 
+
 -- DropForeignKey
 ALTER TABLE "ProductByBank" DROP CONSTRAINT "ProductByBank_product_id_fkey";
 
