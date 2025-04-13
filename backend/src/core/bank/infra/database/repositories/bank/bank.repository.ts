@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaAdapter } from '../../prisma/adapter';
 import { BankModel, BankModelWithProducts } from './models/bank.model';
 import { plainToInstance } from 'class-transformer';
 import { BankRepository } from 'core/bank/domain/port/repositories/bank.repository';
+import { PrismaAdapter } from 'shared/infra/database/prisma/adapter';
 
 @Injectable()
 export class BankRepositoryImpl implements BankRepository {

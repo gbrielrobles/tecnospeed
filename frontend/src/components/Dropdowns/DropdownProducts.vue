@@ -116,7 +116,7 @@ export default {
     this.bankData = null;
             
     try {
-      const response = await fetch(`/api/bank/${bankId}`); 
+      const response = await fetch(`http://localhost:8000/bank/${bankId}`); 
       if (!response.ok) throw new Error('Falha ao carregar produtos');
       
       const data = await response.json();

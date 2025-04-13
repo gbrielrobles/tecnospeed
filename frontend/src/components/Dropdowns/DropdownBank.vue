@@ -84,10 +84,14 @@ export default {
     async getBankOptions() {
       this.loading = true;
       try {
-        const response = await fetch('/api/bank'); 
+        const response = await fetch('http://localhost:8000/bank', {
+          method: 'get',
+        }); 
+        console.log(response)
         const data = await response.json();
         this.banks = data;
       } catch (error) {
+        console.log(error);
         console.error("Erro ao carregar bancos:", error);
       } finally {
         this.loading = false;
