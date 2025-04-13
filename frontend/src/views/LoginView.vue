@@ -10,42 +10,48 @@
         <h1 class="title">Bem-vindo</h1>
         <p class="subtitle">Para criar uma nova Carta de VAN</p>
 
-        <input 
-          v-model="cnpj"
-          type="text" 
-          placeholder="Inserir CNPJ" 
-          class="input-custom"
-        />
+        <div class="input-group">
+          <input 
+            v-model="cnpj"
+            type="text" 
+            placeholder="Inserir CNPJ" 
+            class="input-custom"
+          />
+          
+          <input 
+            v-model="token"
+            type="text" 
+            placeholder="Inserir Token" 
+            class="input-custom"
+          />
+        </div>
         
-        <input 
-          v-model="token"
-          type="text" 
-          placeholder="Inserir Token" 
-          class="input-custom"
-        />
-        
-       <a 
+        <a 
           href="/home"
-          class="btn-submit">
+          class="btn-submit"
+          @click.prevent="handleLogin">
           Acessar
         </a>
+        
       </div>
     </div>
   </div>
 </template>
 
-<script>
-
+<script setup>
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
-import { ref } from 'vue'
-
 const cnpj = ref('')
 const token = ref('')
 
 function handleLogin() {
+  if (!cnpj.value || !token.value) {
+    alert('Por favor, preencha CNPJ e Token')
+    return
+  }
+  
   console.log('CNPJ:', cnpj.value)
   console.log('Token:', token.value)
   router.push('/home')
@@ -67,6 +73,7 @@ html, body {
 body {
   font-family: 'Inter', sans-serif;
   overflow: hidden;
+  background-color: #f5f7fa;
 }
 
 /* Wrapper geral */
@@ -88,6 +95,7 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: 0;
+  opacity: 0.1;
 }
 
 /* Container com conteúdo centralizado */
@@ -95,150 +103,142 @@ body {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 1400px;
+  max-width: 500px;
   padding: 20px;
   display: flex;
   justify-content: center;
 }
 
-/* Box de login - Tamanho grande para desktop */
+/* Box de login - Estilo minimalista */
 .login-box {
   width: 100%;
-  background: rgba(255, 255, 255, 0.92);
-  padding: 3.5rem;
-  border-radius: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   text-align: center;
-  max-width: 700px;
-  height: 500px;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
 }
 
 /* Logo */
 .logo {
-  height: 3rem;
-  margin: 0 auto 2rem;
+  height: 40px;
+  margin: 0 auto 1.5rem;
   display: block;
 }
 
 /* Títulos */
 .title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
   color: #1a1a1a;
 }
 
 .subtitle {
-  color: #4b5563;
-  margin-bottom: 2.5rem;
-  font-size: 1.25rem;
+  color: #64748b;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+/* Grupo de inputs */
+.input-group {
+  width: 100%;
+  margin-bottom: 1.5rem;
 }
 
 /* Inputs */
 .input-custom {
   width: 100%;
-  padding: 1rem 1.25rem;
-  margin-bottom: 1.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   outline: none;
-  transition: all 0.3s ease;
-  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  background-color: #f8fafc;
 }
 
 .input-custom:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 /* Botão */
 .btn-submit {
   background-color: #2563eb;
   color: white;
-  font-weight: 600;
-  padding: 1rem;
+  font-weight: 500;
+  padding: 0.75rem;
   border: none;
-  border-radius: 0.75rem;
+  border-radius: 8px;
   width: 100%;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease;
   cursor: pointer;
-  font-size: 1.1rem;
-  margin-top: 0.5rem;
+  font-size: 1rem;
+  text-decoration: none;
+  display: block;
 }
 
 .btn-submit:hover {
   background-color: #1d4ed8;
 }
 
+/* Texto Assessor */
+.assessor-text {
+  margin-top: 1.5rem;
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
 /* Responsividade para tablets */
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .login-box {
-    max-width: 700px;
-    height: 450px;
-    padding: 2.5rem;
+    padding: 2rem;
+    max-width: 90%;
+  }
+  
+  .logo {
+    height: 36px;
+    margin-bottom: 1.25rem;
   }
   
   .title {
-    font-size: 1.75rem;
+    font-size: 1.3rem;
   }
   
   .subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-  }
-  
-  .input-custom, .btn-submit {
-    padding: 0.9rem;
+    font-size: 0.9rem;
     margin-bottom: 1.5rem;
   }
 }
 
 /* Responsividade para celulares */
-@media (max-width: 768px) {
-  .login-box {
-    max-width: 90%;
-    height: auto;
-    padding: 2rem 1.5rem;
-    min-height: auto;
-  }
-  
-  .logo {
-    height: 2.5rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .title {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .subtitle {
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .input-custom, .btn-submit {
-    padding: 0.75rem;
-    margin-bottom: 1.25rem;
-    font-size: 1rem;
-  }
-}
-
 @media (max-width: 480px) {
   .login-box {
-    padding: 1.5rem 1rem;
+    padding: 1.5rem;
+    border-radius: 8px;
   }
   
   .logo {
-    height: 2rem;
+    height: 32px;
     margin-bottom: 1rem;
   }
   
-  .input-custom, .btn-submit {
+  .input-custom {
+    padding: 0.65rem 0.9rem;
+    font-size: 0.9rem;
+  }
+  
+  .btn-submit {
     padding: 0.65rem;
+    font-size: 0.95rem;
   }
 }
 </style>
