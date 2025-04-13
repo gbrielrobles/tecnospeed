@@ -5,7 +5,6 @@ import { BankNotFoundException } from '../../domain/exceptions/bank-notfound.exc
 import { CnabNotResgitredException } from '../../domain/exceptions/cnab-notregistred.exception';
 import { plainToInstance } from 'class-transformer';
 import { required } from 'utils/required';
-import { have } from 'utils/have';
 
 
 
@@ -20,11 +19,6 @@ export class GetByIdBankUsecase {
     );
 
     required(result, () => new BankNotFoundException());
-
-    result.cnab = have(
-      JSON.parse(result.cnab as unknown as string) as string[],
-      () => new CnabNotResgitredException(),
-    );
 
     return result;
   }

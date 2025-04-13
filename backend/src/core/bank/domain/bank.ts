@@ -1,3 +1,5 @@
+import { Expose } from "class-transformer";
+
 export class Bank {
   id: string;
   name: string;
@@ -7,7 +9,12 @@ export class Bank {
 }
 
 export class Products {
+  @Expose()
   code: string;
+
+  @Expose()
   name: string;
+  
+  @Expose()
   description: string;
 }

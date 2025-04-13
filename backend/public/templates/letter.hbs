@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+    {{#with bank}}
     <h1>Ao {{bank.name}}</h1>
     <h2>Ao NomeGerente </h1>
-    
+    {{/with}}
     <p>Comunicamos que nossa empresa passou a operar os relacionamentos de EDI, <br>
         transferência eletrônica, através da VAN FINNET. <br>
         Solicitamos que esta Instituição disponibilize o suporte necessário para viabilizar <br>
@@ -15,30 +16,33 @@
         com a FINNET</p>
 
     <h2><strong>Contratante</strong></h2>
-    <h2><strong>Razão Social: {{client.legalName}}</strong></h2>
-    <h2><strong>CNPJ: {{client.cnpj}}</strong></h2>
-    <h2><strong>Agência/ Conta corrente: {{client.branchNumber}} | {{client.accountNumber}} </strong></h2>
+    {{#with client}}
+    <h2><strong>Razão Social: {{legalName}}</strong></h2>
+    <h2><strong>CNPJ: {{cnpj}}</strong></h2>
+    <h2><strong>Agência/ Conta corrente: {{branchNumber}} | {{client.accountNumber}} </strong></h2>
     <h2><strong>Convênio</strong></h2>
+    {{/with}}
+
 
     <h2><strong>Van contratada</strong></h2>
     <h2><strong>Razão Social: FINNET S/A Tecnologia</strong></h2>
     <h2><strong>CNPJ: 05.607.266/0001-10</strong></h2>
 
     <h2>Produtos Financeiros</h2>
-    <p>() Cobranca</p>
-    <p>() Pagamento a Fornecedores</p>
-    <p>() Pagamento de Tributos</p>
-    <p>() Pagamento de Salários</p>
-    <p>() Extrato</p>
-    <p>() Código de Barras / Arrecadação</p>
 
-    <h2>Ambiente</h2>
-    <p>(X) Arquivo em produção</p>
+    {{#with bank}}
+        {{#each products}}
+        <p>({{#if selected}}X{{else}} {{/if}}) {{description}}</p>
+        {{/each}}
 
-    <h2>Cnab</h2>
-    <p>() 240</p>
-    <p>() 400</p>
+        <h2>Ambiente</h2>
+        <p>(X) Arquivo em produção</p>
 
+        <h2>Cnab</h2>
+            {{#each cnabs}}
+                <p>({{#if selected}}X{{else}} {{/if}}) {{name}}</p>
+            {{/each}}   
+    {{/with}}
     <p>Os custos serão assumidos 100% pela Empresa (alterar para 100% Banco se assim for <br>
     negócio entre Empresa e Banco)</p>
     <h2>Qualquer dúvida contatar: </h3>

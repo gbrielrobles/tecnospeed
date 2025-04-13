@@ -1,15 +1,29 @@
+import { Expose } from "class-transformer";
 
 export class Letter {
     bank: Bank;
     client: Client;
-    product: Product[]
 }
 
-class Product {
-    id: string;
+export class Bank {
+    @Expose()
+    code: string;
+
+    @Expose()
+    name: string;
+
+    @Expose()
+    products: Product[]
+
+    cnabs: Cnab[]
 }
 
-class Client {
+class Cnab {
+    name: string;
+    selected: boolean;
+}
+
+ class Client {
     legalName: string;
     cnpj: string;
     accountNumber: number;
@@ -17,7 +31,10 @@ class Client {
     // agreement: string;
 }
 
-class Bank {
-    code: string;
+
+ class Product {
+    id: string;
     name: string;
+    description: string;
+    selected: boolean
 }

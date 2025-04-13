@@ -21,6 +21,10 @@ export class GetLetterRequest {
     @IsString({each: true})        
     selectedProducts: string[]
 
+    @IsArray()
+    @IsString({each: true})
+    selectedCnabs: string[]
+
     toInput() : BuildLetterInput {
         return {
             accountNumber: this.accountNumber,
@@ -28,7 +32,8 @@ export class GetLetterRequest {
             branchNumber: this.branchNumber,
             cnpj: this.cnpj,
             legalName: this.legalName,
-            selectedProducts: this.selectedProducts
+            selectedProducts: this.selectedProducts,
+            selectedCnabs: this.selectedCnabs
         }
     }
 }

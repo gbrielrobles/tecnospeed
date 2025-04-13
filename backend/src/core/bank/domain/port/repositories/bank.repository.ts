@@ -2,5 +2,5 @@ import { BankModel, BankModelWithProducts } from "../../../infra/database/reposi
 
 export abstract class BankRepository {
   abstract findAll(): Promise<BankModel[]>;
-  abstract findById(id: string): Promise<BankModelWithProducts>;
+  abstract findById(id: string): Promise<BankModelWithProducts | null>;
 }

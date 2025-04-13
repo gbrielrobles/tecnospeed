@@ -5,4 +5,5 @@ export class BuildLetterInput {
     accountNumber: number;
     branchNumber: number;
     selectedProducts: string[]
+    selectedCnabs: string[]
 }

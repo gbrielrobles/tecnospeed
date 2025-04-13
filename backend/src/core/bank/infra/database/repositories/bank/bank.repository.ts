@@ -11,19 +11,11 @@ export class BankRepositoryImpl implements BankRepository {
   async findAll(): Promise<BankModel[]> {
     const result = await this.prisma.bank.findMany();
     return (
-      result.map((bank): BankModel => {
-        return {
-          code: bank.code,
-          createdAt: bank.createdAt,
-          id: bank.id,
-          name: bank.name,
-          updatedAt: bank.updatedAt 
-        }
-      }) ?? []
+      result.map((bank): BankModel => plainToInstance(BankModel, bank)) ?? []
     );
   }
 
-  async findById(id: string): Promise<BankModelWithProducts> {
+  async findById(id: string): Promise<BankModelWithProducts | null> {
     const result = await this.prisma.bank.findFirst({
       where: { id: id },
       include: {
@@ -32,23 +24,16 @@ export class BankRepositoryImpl implements BankRepository {
         },
       },
     });
-
-    if (!result) {
-      throw new Error('Bank not found');
-    }
-
     return (
-      plainToInstance(BankModelWithProducts, {
-        cnab: result.cnabs,
-        id: result.id,
-        name: result.name,
-        code: result.code,
-        products: result.ProductByBank.map((p) => ({
-          id: p.product.id,
-          name: p.product.name,
-          description: p.product.description,
-        })),
-      }) ?? null
+      result ?
+        plainToInstance(BankModelWithProducts, {
+          ...result,
+          products: result.ProductByBank.map((p) => ({
+            id: p.product.id,
+            name: p.product.name,
+            description: p.product.description,
+          })),
+        }) : null
     );
   }
 }
