@@ -16,7 +16,7 @@ export class BuildLetterUseCase {
         private readonly cached: CachedLetterRepository
     ) { }
     
-    async execute(input: BuildLetterInput) : Promise<BuildLetterOutput>{
+    async execute(input: BuildLetterInput) : Promise<any>{
         const result = await this.bankRepository.findById(input.bankId);
         if (!result) throw new Error()
         
@@ -94,6 +94,6 @@ export class BuildLetterUseCase {
         }
 
         this.cached.set(letter.hashed, letter.data)
-        return letter;
+        return letter.data;
     }
 }
