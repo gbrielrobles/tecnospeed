@@ -3,7 +3,7 @@ export class GetBankByIdOutput {
   name: string;
   code: string;
   products: Product[];
-  cnab: string[];
+  cnabs: string[];
 }
 
 class Product {

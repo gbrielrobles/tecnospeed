@@ -147,7 +147,7 @@ export default {
       });
     },
     getBankCnabTypes() {
-      return this.bankData?.cnab || [];
+      return this.bankData?.cnabs || [];
     }
   }
 }
