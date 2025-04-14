@@ -6,12 +6,17 @@ import { ProductNotFoundException } from "core/letter/domain/exceptions/product-
 import { Bank } from "core/letter/domain/letter";
 import { plainToInstance } from "class-transformer";
 import { CnabNotFoundException } from "core/letter/domain/exceptions/cnab-not-found copy";
+import { CachedLetterRepository } from "core/letter/domain/port/repositories/cached/repository";
+import { BuildLetterOutput } from "./output";
 
 @Injectable()
 export class BuildLetterUseCase {
-    constructor(private readonly bankRepository: BankRepository) { }
+    constructor(
+        private readonly bankRepository: BankRepository,
+        private readonly cached: CachedLetterRepository
+    ) { }
     
-    async execute(input: BuildLetterInput) {
+    async execute(input: BuildLetterInput) : Promise<BuildLetterOutput>{
         const result = await this.bankRepository.findById(input.bankId);
         if (!result) throw new Error()
         
@@ -56,9 +61,10 @@ export class BuildLetterUseCase {
             cnabFound.selected = true;
         }
 
-        return FactoryLetter.build({
+        const letter = FactoryLetter.build({
             bank: {
                 cnabs: bank.cnabs,
+                bankContactManager: input.bankManagerContact,
                 code: bank.code,
                 name: bank.name,
                 products: bank.products.map(p => {
@@ -74,8 +80,20 @@ export class BuildLetterUseCase {
                 accountNumber: input.accountNumber,
                 branchNumber: input.branchNumber,
                 cnpj: input.cnpj,
-                legalName: input.legalName
+                legalName: input.legalName,
+                companyContact: input.companyContact,
+                agreement: input.agreement
             }
         })
+
+        if (input.hashedHtml) {
+            this.cached.get(input.hashedHtml);
+            return {
+                data: ''
+            };
+        }
+
+        this.cached.set(letter.hashed, letter.data)
+        return letter;
     }
 }

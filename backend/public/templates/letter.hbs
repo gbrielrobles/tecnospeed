@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,10 +17,10 @@
 
     <h2><strong>Contratante</strong></h2>
     {{#with client}}
-    <h2><strong>Razão Social: {{legalName}}</strong></h2>
-    <h2><strong>CNPJ: {{cnpj}}</strong></h2>
-    <h2><strong>Agência/ Conta corrente: {{branchNumber}} | {{client.accountNumber}} </strong></h2>
-    <h2><strong>Convênio</strong></h2>
+    <h2><strong>Razão Social: </strong>{{legalName}}</h2>
+    <h2><strong>CNPJ: </strong>{{cnpj}}</h2>
+    <h2><strong>Agência/ Conta corrente: </strong>{{branchNumber}} | {{client.accountNumber}}</h2>
+    <h2><strong>Convênio: </strong> {{agreement}}</h2>
     {{/with}}
 
 
@@ -46,11 +46,13 @@
     <p>Os custos serão assumidos 100% pela Empresa (alterar para 100% Banco se assim for <br>
     negócio entre Empresa e Banco)</p>
     <h2>Qualquer dúvida contatar: </h3>
+    {{#with client.companyContact}}
     <h3><strong>Contato da Empresa</strong></h3>
-    <p><strong>Nome:</strong></p>
-    <p><strong>E-mail</strong></p>
-    <p><strong>Telefone</strong></p>
-    
+    <p><strong>Nome:</strong>{{name}}</p>
+    <p><strong>E-mail</strong>{{email}}</p>
+    <p><strong>Telefone</strong>{{fone}}</p>
+    {{/with}}
+
     <h3><strong>Contato da VAN FINNET</strong></h3>
     <p><strong>Nome: Bianca e João</strong></p>
     <p><strong>E-mail: pis.posvenda@finnet.com.br</strong></p>
@@ -61,11 +63,12 @@
     <p><strong>E-mail: viniciusmaierecw@gmail.com</strong></p>
     <p><strong>Telefone: (44)99962-4364</strong></p>
 
+    {{#with bank.bankContactManager}}
     <h3><strong>Contato do Gerente de conta</strong></h3>
-    <p><strong>Nome:</strong></p>
-    <p><strong>E-mail</strong></p>
-    <p><strong>Telefone</strong></p>
-
+    <p><strong>Nome: </strong>{{name}}</p>
+    <p><strong>E-mail: </strong>{{email}}</p>
+    <p><strong>Telefone: </strong>{{fone}}</p>
+    {{/with}}
     <p><strong>Colocamo-nos à disposição para quaisquer esclarecimentos adicionais. <br>
         Atenciosamente,</strong></p>
 

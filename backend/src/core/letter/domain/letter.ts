@@ -14,8 +14,14 @@ export class Bank {
 
     @Expose()
     products: Product[]
-
     cnabs: Cnab[]
+    bankContactManager: Contact
+}
+
+class Contact {
+    name: string;
+    email: string;
+    fone: string
 }
 
 class Cnab {
@@ -28,7 +34,8 @@ class Cnab {
     cnpj: string;
     accountNumber: number;
     branchNumber: number;
-    // agreement: string;
+    companyContact: Contact 
+    agreement: string;
 }
 
 
