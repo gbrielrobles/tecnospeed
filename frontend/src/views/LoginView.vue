@@ -58,7 +58,7 @@ const handleLogin = () => {
 </script>
 
 <style>
-/* [Mantido igual ao seu CSS original] */
+
 * {
   margin: 0;
   padding: 0;
