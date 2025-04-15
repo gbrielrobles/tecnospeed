@@ -95,7 +95,6 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: 0;
-  opacity: 0.1;
 }
 
 /* Container com conteúdo centralizado */
