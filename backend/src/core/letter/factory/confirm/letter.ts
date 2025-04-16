@@ -7,8 +7,10 @@ import * as crypto from "crypto"
 
 export abstract class FactoryLetter {
     static build(input: Letter) {
-        const templatePath = fromRootTemplate('letter.hbs');
-        const source = fs.readFileSync(templatePath, 'utf-8');
+        const templateNexxeraPath = fromRootTemplate('nexxera','letter.hbs');
+        const templateFinnetPath = fromRootTemplate('finnet','letter.hbs');
+        
+        const source = fs.readFileSync(templateNexxeraPath, 'utf-8');
         const template = hbs.compile(source);
         const data = template(input);
 

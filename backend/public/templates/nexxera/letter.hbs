@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carta de Abertura de Relacionamento</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-black p-10">
+  <div class="max-w-4xl mx-auto border border-black p-6">
+    <h1 class="text-center font-bold text-lg mb-4">CARTA DE ABERTURA DE RELACIONAMENTO</h1>
+    <div class="border border-black h-32 mb-6 flex flex-col items-center justify-center">
+      <div>[LOGO]</div>
+      <div class="font-bold">{{client.legalName}}</div>
+      <div>Carta Circular</div>
+    </div>
+    <h2 class="font-semibold">Dados do Banco:</h2>
+    <p><strong>Banco:</strong> {{bank.name}} &nbsp;&nbsp;&nbsp; <strong>Agência:</strong>{{client.branchNumber}}</p>
+    <p><strong>Cidade:</strong> [CIDADE DO BANCO] &nbsp;&nbsp;&nbsp; <strong>UF:</strong> [UF DO BANCO]</p>
+    
+    <h2 class="font-semibold mt-4">Dados do gerente responsável pela abertura (ou setor responsável):</h2>
+    <p><strong>Nome:</strong> {{bank.bankContactManager.name}} &nbsp;&nbsp;&nbsp; <strong>Telefone/Celular:</strong> {{bank.bankContactManager.fone}}</p>
+    <p><strong>E-mail:</strong> {{bank.bankContactManager.email}}</p>
+    <p class="mt-2"><strong>Preferência por contato:</strong>
+      [ ] E-mail &nbsp;&nbsp; [ ] Telefone &nbsp;&nbsp; [ ] Whatsapp &nbsp;&nbsp; Outro: ______
+    </p>
+    <p class="text-sm italic">*** Este contato será utilizado apenas caso haja problemas ou atrasos no processo de liberação do relacionamento</p>
+
+    <h2 class="font-semibold mt-6">Assunto: Solicitação de Alteração do Processo EDI – Troca Eletrônica de Dados</h2>
+    <p class="mt-2">Prezados Senhores,</p>
+    <p class="mt-2 text-justify">
+      Avaliando os processos eletrônicos existentes na {{client.legalName}}, percebemos a necessidade de alterarmos a forma de entrega e recebimento de arquivos eletrônicos com bancos, implantando em nossa empresa maior padronização e controle nestes processos.
+    </p>
+    <p class="mt-2 text-justify">
+      Em função de atender estas necessidades de integração, informamos que a VAN <strong>NEXXERA TECNOLOGIA E SERVIÇOS S/A</strong> ficará responsável pelo tráfego de dados entre a {{client.legalName}} e o Banco, para os arquivos da tabela abaixo, em substituição ao atual meio de comunicação.
+    </p>
+
+    <table class="w-full border border-black mt-4 text-center">
+      <thead>
+         {{#with bank}}
+            {{#each products}}
+                {{#if selected}}
+                    <tr>
+                        <th class="border border-black px-2 py-1">Serviço no Banco</th>
+                    </tr>
+                {{/if}}
+            {{/each}}
+        {{/with}}
+      </thead>
+      <tbody>
+        {{#with bank}}
+            {{#each products}}
+                {{#if selected}}
+                    <tr>
+                        <td class="border border-black px-2 py-2">{{name}}</td>
+                    </tr>
+                {{/if}}
+            {{/each}}
+        {{/with}}
+      </tbody>
+    </table>
+
+    <p class="mt-4 text-justify">
+      Este processo faz parte de um novo projeto que está sendo implementado na área financeira de nossa empresa, e por esse motivo necessitamos da liberação dos arquivos solicitados, em Ambiente de Produção.
+    </p>
+    <p class="mt-2 text-justify">
+      Desta forma, solicitamos que o Banco disponibilize à Nexxera os arquivos com periodicidade diária, através do meio de comunicação já utilizado com a Nexxera.
+    </p>
+    <p class="mt-2 text-justify">
+      Informamos que os custos são de responsabilidade da {{client.legalName}}.
+    </p>
+    <p class="mt-2 text-justify">
+      Os contatos da Nexxera serão através de equipe de Relacionamento nos e-mails implantacao@nexxera.com e suporte@nexxera.com. Sendo assim, solicitamos a devida liberação dos arquivos com a maior brevidade possível, pois depende da integração para finalização do projeto.
+    </p>
+    <p class="mt-2">Agradecemos com os habituais atenção e desejo já de agradecimentos.</p>
+    <p class="mt-2">Atenciosamente,</p>
+
+    <table class="w-full border border-black mt-4 text-sm">
+      <tbody>
+        {{#with client}}
+        <tr>
+          <td class="border border-black px-2 py-1"><strong>RAZÃO SOCIAL:</strong> {{legalName}}</td>
+          <td class="border border-black px-2 py-1"><strong>CNPJ:</strong> {{cnpj}}</td>
+        </tr>
+        {{/with}}
+         {{#with client.companyContact}}
+        <tr>
+          <td class="border border-black px-2 py-1"><strong>NOME:</strong> {{name}}</td>
+          <td class="border border-black px-2 py-1"><strong>CARGO:</strong> [CARGO RESP EMPRESA]</td>
+        </tr>
+        <tr>
+          <td class="border border-black px-2 py-1"><strong>TELEFONE:</strong>{{fone}}</td>
+          <td class="border border-black px-2 py-1"><strong>E-MAIL:</strong> {{email}}</td>
+        </tr>
+        {{/with}}
+        <tr>
+          <td class="border border-black px-2 py-1"><strong>RESPONSÁVEL:</strong> [RESP. TECNOSPEED]</td>
+          <td class="border border-black px-2 py-1"><strong>E-MAIL RESP TEC:</strong> [RESP. TECNOSPEED]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
