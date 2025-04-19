@@ -26,12 +26,11 @@
           />
         </div>
         
-        <a 
-          href="/home"
+        <button 
           class="btn-submit"
-          @click.prevent="handleLogin">
+          @click="handleLogin">
           Acessar
-        </a>
+        </button>
         
       </div>
     </div>
@@ -46,7 +45,7 @@ const router = useRouter()
 const cnpj = ref('')
 const token = ref('')
 
-function handleLogin() {
+const handleLogin = () => {
   if (!cnpj.value || !token.value) {
     alert('Por favor, preencha CNPJ e Token')
     return
@@ -59,7 +58,7 @@ function handleLogin() {
 </script>
 
 <style>
-/* Reset e estilos base */
+
 * {
   margin: 0;
   padding: 0;
@@ -95,7 +94,6 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: 0;
-  opacity: 0.1;
 }
 
 /* Container com conteúdo centralizado */
