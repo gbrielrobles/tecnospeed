@@ -1,6 +1,7 @@
 import { Type } from "class-transformer";
-import { IsArray, IsBoolean, IsDefined, IsEmail, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator"
-import { BuildLetterInput } from "core/letter/application/usecase/input";
+import { IsArray, IsBoolean, IsDefined, IsEmail, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator"
+import { GetLetterInput } from "core/letter/application/usecase/get-letter/input";
+import { PREFERENCES_CONTACT } from "core/letter/domain/enum/preferences-contact.enum";
 
 class Contact {
     @IsString()
@@ -10,7 +11,11 @@ class Contact {
     email: string;
 
     @IsString()
-    fone: string
+    fone: string;
+
+    @IsString()
+    @IsOptional()
+    positionCompany?: string;
 }
 
 export class GetLetterRequest {
@@ -50,23 +55,39 @@ export class GetLetterRequest {
     @IsString()
     agreement: string
 
+    @IsString()
+    ufBank: string
+
+    @IsString()
+    bankCity: string
+
+    @IsArray()
+    @IsString({ each: true })        
+    @IsEnum(PREFERENCES_CONTACT)
+    preferenceByContact: PREFERENCES_CONTACT[]
+
     @IsOptional()
     @IsString()
-    hashedHtml?: string
+    hashed?: string
 
-    toInput() : BuildLetterInput {
+    toInput() : GetLetterInput {
         return {
-            accountNumber: this.accountNumber,
-            bankId: this.bankId,
-            branchNumber: this.branchNumber,
+            bank: {
+                accountNumber: this.accountNumber,
+                bankId: this.bankId,
+                branchNumber: this.branchNumber,
+                bankManagerContact: this.bankManagerContact,
+                selectedCnabs: this.selectedCnabs,
+                selectedProducts: this.selectedProducts,
+                bankCity: this.bankCity,
+                ufBank: this.ufBank
+            },
             cnpj: this.cnpj,
             legalName: this.legalName,
-            selectedProducts: this.selectedProducts,
-            selectedCnabs: this.selectedCnabs,
-            bankManagerContact: this.bankManagerContact,
             companyContact: this.companyContact,
-            hashedHtml: this.hashedHtml,
-            agreement: this.agreement
+            hashed: this.hashed,
+            agreement: this.agreement,
+            preferenceByContact: this.preferenceByContact
         }
     }
 }
