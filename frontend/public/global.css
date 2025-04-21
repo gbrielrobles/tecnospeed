@@ -50,6 +50,17 @@
   padding: var(--space-lg);
   background-color: var(--white);
   border-top: 1px solid var(--gray-300);
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.dropdown-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+  background-color: var(--gray-400);
+  border-radius: var(--radius-sm);
 }
 
 /* Componente DropdownBank */
@@ -364,7 +375,6 @@
 }
 
 .form-input[required] {
-  border-left: 3px solid var(--primary-blue);
   padding-left: calc(var(--space-md) - 3px);
 }
 

@@ -101,10 +101,10 @@
           type="text"
           id="cnpj"
           v-model="form.cnpj"
-          v-mask="'##.###.###/####-##'"
           class="form-input"
           required
           placeholder="00.000.000/0000-00"
+          v-mask="'cnpj'"
         />
       </div>
 
@@ -228,16 +228,15 @@
             type="text"
             id="cep"
             v-model="form.cep"
-            v-mask="'#####-###'"
             class="form-input"
             required
             placeholder="00000-000"
+            v-mask="'cep'"
           />
         </div>
       </div>
     </div>
 
-    <!-- Seção 4: Informações do Arquivo -->
     <div class="form-section">
       <h3 class="section-title">Configuração do Arquivo</h3>
       
@@ -290,86 +289,95 @@
   </form>
 </template>
 
-<script setup>
-import { ref, watch } from 'vue'
-
-var props = defineProps({
-  initialData: Object,
-  bank: {
-    type: String,
-    required: true
+<script>
+export default {
+  props: {
+    initialData: Object,
+    bank: {
+      type: String,
+      required: true
+    },
+    products: {
+      type: String,
+      required: true
+    }
   },
-  products: {
-    type: String,
-    required: true
-  }
-})
-
-var emit = defineEmits(['update'])
-
-var form = ref({
-  banco: props.bank || '',
-  produto: props.products || '',
-  cnpj: '',
-  agencia: '',
-  conta: '',
-  digito_agencia: '',
-  digito_conta: '',
-  convenio: '',
-  nome_empresa: '',
-  nome_fantasia: '',
-  inscricao_estadual: '',
-  logradouro: '',
-  numero: '',
-  complemento: '',
-  bairro: '',
-  cidade: '',
-  uf: '',
-  cep: '',
-  codigo_empresa: '',
-  numero_sequencial_arquivo: '',
-  data_geracao: '',
-  hora_geracao: ''
-})
-
-watch(() => props.initialData, function(val) {
-  if (val) {
-    form.value = { ...form.value, ...val }
-  }
-}, { immediate: true })
-
-watch(() => form.value.cnpj, async function(cnpj) {
-  var cleanCnpj = cnpj?.replace(/\D/g, '')
-  if (cleanCnpj?.length === 14) {
-    try {
-      var res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`)
-      var data = await res.json()
-      form.value.nome_empresa = data.razao_social || form.value.nome_empresa
-      form.value.nome_fantasia = data.nome_fantasia || form.value.nome_fantasia
-    } catch (err) {
-      console.error('Erro ao consultar CNPJ:', err)
+  emits: ['update'],
+  data() {
+    return {
+      form: {
+        banco: this.bank || '',
+        produto: this.products || '',
+        cnpj: '',
+        agencia: '',
+        conta: '',
+        digito_agencia: '',
+        digito_conta: '',
+        convenio: '',
+        nome_empresa: '',
+        nome_fantasia: '',
+        inscricao_estadual: '',
+        logradouro: '',
+        numero: '',
+        complemento: '',
+        bairro: '',
+        cidade: '',
+        uf: '',
+        cep: '',
+        codigo_empresa: '',
+        numero_sequencial_arquivo: '',
+        data_geracao: '',
+        hora_geracao: ''
+      }
+    }
+  },
+  created() {
+    const now = new Date()
+    const data = now.toISOString().split('T')[0]
+    const hora = now.toTimeString().split(':').slice(0, 2).join(':') 
+    this.form.data_geracao = data
+    this.form.hora_geracao = hora
+  },
+  watch: {
+    initialData: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          this.form = { ...this.form, ...val }
+        }
+      }
+    },
+    'form.cnpj': {
+      immediate: false,
+      async handler(cnpj) {
+        const cleanCnpj = cnpj?.replace(/\D/g, '')
+        if (cleanCnpj?.length === 14) {
+          try {
+            const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`)
+            const data = await res.json()
+            this.form.nome_empresa = data.razao_social || this.form.nome_empresa
+            this.form.nome_fantasia = data.nome_fantasia || this.form.nome_fantasia
+          } catch (err) {
+            console.error('Erro ao consultar CNPJ:', err)
+          }
+        }
+      }
+    }
+  },
+  methods: {
+    handleSubmit() {
+      this.$emit('update', this.form)
+    },
+    validateFields() {
+      const requiredFields = [
+        'banco', 'produto', 'agencia', 'conta', 'digito_conta',
+        'nome_empresa', 'cnpj', 'logradouro', 'numero',
+        'bairro', 'cidade', 'uf', 'cep',
+        'codigo_empresa', 'numero_sequencial_arquivo',
+        'data_geracao', 'hora_geracao'
+      ]
+      return requiredFields.every(field => !!this.form[field])
     }
   }
-})
-
-var handleSubmit = function() {
-  emit('update', form.value)
 }
-
-var validateFields = function() {
-  var requiredFields = [
-    'banco', 'produto', 'agencia', 'conta', 'digito_conta',
-    'nome_empresa', 'cnpj', 'logradouro', 'numero',
-    'bairro', 'cidade', 'uf', 'cep',
-    'codigo_empresa', 'numero_sequencial_arquivo',
-    'data_geracao', 'hora_geracao'
-  ]
-  return requiredFields.every(function(field) { 
-    return !!form.value[field] 
-  })
-}
-
-defineExpose({
-  validateFields: validateFields
-})
 </script>

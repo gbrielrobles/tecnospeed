@@ -16,6 +16,7 @@
             type="text" 
             placeholder="Inserir CNPJ" 
             class="input-custom"
+            v-mask="'cnpj'"
           />
           
           <input 
@@ -37,24 +38,37 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
-const cnpj = ref('')
-const token = ref('')
+<script>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-const handleLogin = () => {
-  if (!cnpj.value || !token.value) {
-    alert('Por favor, preencha CNPJ e Token')
-    return
+export default {
+  setup() {
+    const router = useRouter();
+    const cnpj = ref('');
+    const token = ref('');
+
+    const handleLogin = () => {
+      const cnpjLimpo = cnpj.value.replace(/\D/g, '');
+      
+      if (!cnpjLimpo || !token.value) {
+        alert('Por favor, preencha CNPJ e Token');
+        return;
+      }
+      
+      console.log('CNPJ (limpo):', cnpjLimpo);
+      console.log('Token:', token.value);
+      router.push('/home');
+    };
+
+    return {
+      cnpj,
+      token,
+      handleLogin
+    };
   }
-  
-  console.log('CNPJ:', cnpj.value)
-  console.log('Token:', token.value)
-  router.push('/home')
-}
+};
 </script>
 
 <style>
@@ -147,6 +161,8 @@ body {
 .input-group {
   width: 100%;
   margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Inputs */
