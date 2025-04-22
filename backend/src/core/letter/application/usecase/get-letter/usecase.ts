@@ -67,6 +67,6 @@ export class GetLetterUseCase {
         }
 
         this.cached.set(letter.hashed, JSON.stringify(letter.data))
-        return letter.data.finnet;
+        return letter;
     }
 }
