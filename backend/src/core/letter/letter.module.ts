@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { SharedModule } from "shared/shared.module";
-import { LetterController } from "./infra/http/get/controller";
+import { LetterController } from "./infra/http/get-letter/controller";
 import { GetLetterUseCase } from "./application/usecase/get-letter/usecase";
 import { BankRepository } from "core/bank/domain/port/repositories/bank.repository";
 import { BankRepositoryImpl } from "core/bank/infra/database/repositories/bank/bank.repository";

@@ -60,10 +60,11 @@ export class GetLetterRequest {
 
     @IsString()
     bankCity: string
-
+  
     @IsArray()
-    @IsString({ each: true })        
-    @IsEnum(PREFERENCES_CONTACT)
+    @IsEnum(PREFERENCES_CONTACT, {
+        each: true
+    })
     preferenceByContact: PREFERENCES_CONTACT[]
 
     @IsOptional()
