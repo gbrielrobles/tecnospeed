@@ -1,14 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { GetLetterInput } from "./input";
 import { BankRepository } from "core/bank/domain/port/repositories/bank.repository";
-import { ProductNotFoundException } from "core/letter/domain/exceptions/product-not-found";
-import { Bank, Letter } from "core/letter/domain/letter";
-import { plainToInstance } from "class-transformer";
-import { CnabNotFoundException } from "core/letter/domain/exceptions/cnab-not-found copy";
 import { CachedLetterRepository } from "core/letter/domain/port/repositories/cached/repository";
-import {  TemplateFacade } from "../../facade/template";
 import { BuildLetterTemplate } from "../../services/build-template/services";
-import { LetterDto } from "../../services/build-template/dto/Letter";
 import { PREFERENCES_CONTACT } from "core/letter/domain/enum/preferences-contact.enum";
 
 @Injectable()
