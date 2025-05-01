@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-black font-serif p-16 max-w-[794px] min-h-[1123px] mx-auto text-[15px] leading-relaxed tracking-wide">
+
+  {{#with bank}}
+    <h1 class="text-xl font-bold mb-2">Ao {{name}}</h1>
+    <p class="mb-8">A/c {{bankContactManager.name}}</p>
+  {{/with}}
+
+  <p class="mb-8">
+    Comunicamos que nossa empresa passou a operar os relacionamentos de EDI,<br>
+    transferência eletrônica, através da VAN FINNET.<br>
+    Solicitamos que esta Instituição disponibilize o suporte necessário para viabilizar<br>
+    esta implantação, onde as ações necessárias para esta migração serão conduzidas juntamente<br>
+    com a FINNET.
+  </p>
+
+  <div class="mb-8">
+    <p class="font-bold">Contratante</p>
+    {{#with client}}
+      <p>Razão Social: {{legalName}}</p>
+      <p>CNPJ: {{cnpj}}</p>
+      <p>Agência / Conta corrente: {{branchNumber}} | {{client.accountNumber}}</p>
+      <p>Convênio: {{agreement}}</p>
+    {{/with}}
+  </div>
+
+  <div class="mb-8">
+    <p class="font-bold">VAN Contratada</p>
+    <p>Razão Social: FINNET S/A Tecnologia</p>
+    <p>CNPJ: 05.607.266/0001-10</p>
+  </div>
+
+  <div class="mb-8">
+    <p class="font-bold">Produtos Financeiros</p>
+    {{#with bank}}
+      {{#each products}}
+        <p>({{#if selected}}X{{else}} {{/if}}) {{description}}</p>
+      {{/each}}
+
+      <p class="mt-6 font-bold">Ambiente</p>
+      <p>(X) Arquivo em produção</p>
+
+      <p class="mt-6 font-bold">CNAB</p>
+      {{#each cnabs}}
+        <p>({{#if selected}}X{{else}} {{/if}}) {{name}}</p>
+      {{/each}}
+    {{/with}}
+  </div>
+
+  <p class="mb-8">Os custos serão assumidos 100% pela Empresa (alterar para 100% Banco se assim for acordo entre Empresa e Banco).</p>
+
+  <div class="mb-8">
+    <p class="font-bold">Contato da Empresa</p>
+    {{#with client.companyContact}}
+      <p>Nome: {{name}}</p>
+      <p>E-mail: {{email}}</p>
+      <p>Telefone: {{fone}}</p>
+    {{/with}}
+  </div>
+
+  <div class="mb-8">
+    <p class="font-bold">Contato da VAN FINNET</p>
+    <p>Nome: Bianca e João</p>
+    <p>E-mail: pis.posvenda@finnet.com.br</p>
+    <p>Telefone: (11) 94457-8493 | (11) 99189-2213</p>
+  </div>
+
+  <div class="mb-8">
+    <p class="font-bold">Responsável Técnico</p>
+    <p>Nome: Vinicius Maier</p>
+    <p>E-mail: viniciusmaierecw@gmail.com</p>
+    <p>Telefone: (44) 99962-4364</p>
+  </div>
+
+  <div class="mb-8">
+    <p class="font-bold">Gerente de Conta</p>
+    {{#with bank.bankContactManager}}
+      <p>Nome: {{name}}</p>
+      <p>E-mail: {{email}}</p>
+      <p>Telefone: {{fone}}</p>
+    {{/with}}
+  </div>
+
+  <p class="mb-10">Colocamo-nos à disposição para quaisquer esclarecimentos adicionais.</p>
+
+  <div class="flex justify-end mt-16">
+    <div class="flex flex-col w-80 items-start">
+      <p class="font-bold mb-10">Atenciosamente,</p>
+      <div class="w-full h-px bg-black mb-1"></div>
+      <p class="text-sm">Assinatura do responsável pela empresa</p>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -6,13 +6,8 @@ export class Letter {
 }
 
 export class Bank {
-    @Expose()
     code: string;
-
-    @Expose()
     name: string;
-
-    @Expose()
     products: Product[]
     cnabs: Cnab[]
     bankContactManager: Contact
@@ -29,7 +24,7 @@ class Cnab {
     selected: boolean;
 }
 
- class Client {
+class Client {
     legalName: string;
     cnpj: string;
     accountNumber: number;
@@ -39,7 +34,7 @@ class Cnab {
 }
 
 
- class Product {
+class Product {
     id: string;
     name: string;
     description: string;

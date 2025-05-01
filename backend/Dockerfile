@@ -5,6 +5,6 @@ RUN yarn install
 RUN apt-get update -y && apt-get install -y openssl
 RUN apt-get update && apt-get install -y procps
 COPY . .  
-RUN yarn run prisma generate
+
 EXPOSE 8000
 CMD ["yarn", "run", "start:dev"]
