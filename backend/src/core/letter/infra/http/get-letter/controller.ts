@@ -10,7 +10,7 @@ export class LetterController {
 
     @Post('letter')
     async getLetter(@Body() request: GetLetterRequest) {
-        return await this.usecase.execute(plainToInstance(GetLetterRequest,request).toInput());
+        return await this.usecase.execute(request.toInput());
     }
 
 }

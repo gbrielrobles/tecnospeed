@@ -4,13 +4,16 @@ import { BankRepositoryImpl } from './core/bank/infra/database/repositories/bank
 import { SharedModule } from 'shared/shared.module';
 import { BankModule } from 'core/bank/bank.module';
 import { LetterModule } from 'core/letter/letter.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
     SharedModule,
     BankModule,
-    LetterModule
+    LetterModule,
+    PrometheusModule.register({
+      path: '/metrics',
+    })
   ],
- 
 })
 export class AppModule {}
