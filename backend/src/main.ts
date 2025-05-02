@@ -10,7 +10,9 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'public', 'templates'));
   app.setViewEngine('hbs');
   app.enableCors();
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+  }));
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

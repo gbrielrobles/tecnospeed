@@ -15,7 +15,7 @@ export class GetLetterUseCase {
     
     async execute(input: GetLetterInput){
         const result = await this.bankRepository.findById(input.bank.bankId);
-       
+        
         if (!result) throw new Error()
        
         const letter = this.build.createLetter(
@@ -58,15 +58,8 @@ export class GetLetterUseCase {
                 }
             }
         );
-       
-        if (input.hashed) {
-            this.cached.get(input.hashed);
-            return {
-                data: 'ok'
-            };
-        }
 
-        this.cached.set(letter.hashed, JSON.stringify(letter.data))
+        await this.cached.set(letter.hashed, JSON.stringify(letter.data))
         return letter;
     }
 }

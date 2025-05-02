@@ -3,6 +3,8 @@ version: '3.8'
 volumes:
   db_data:
   cached:
+  prometheus_data:
+  grafana-storage:
 
 services:
   tecnospeed-db:
@@ -35,6 +37,8 @@ services:
   app:
     build: ./
     restart: always
+    container_name: app-server
+    user: root
     volumes:
       - .:/src
       - /src/node_modules
@@ -46,7 +50,41 @@ services:
       - tecnospeed-cached
     networks:
       - tecnospeed-networks
+      - monitoring
+  tecnospeed-grafana:
+    image: grafana/grafana:11.2.9
+    container_name: grafana-server
+    restart: always
+    ports:
+      - '3001:3000'
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: 'admin'
+    networks:
+      - monitoring
+    volumes:
+      - grafana-storage:/var/lib/grafana
 
+    depends_on:
+      - app
+      - tecnospeed-prometheus
+  tecnospeed-prometheus:
+    image: prom/prometheus:v3.1.0
+    container_name: prometheus-server
+    restart: always
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - monitoring
+    depends_on:
+      - app
 networks:
   tecnospeed-networks:
+    driver: bridge
+  monitoring:
     driver: bridge
