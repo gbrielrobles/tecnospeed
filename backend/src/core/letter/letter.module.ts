@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { SharedModule } from "shared/shared.module";
 import { LetterController } from "./infra/http/get-letter/controller";
 import { GetLetterUseCase } from "./application/usecase/get-letter/usecase";
@@ -9,6 +9,7 @@ import { CachedLetterRepository } from "./domain/port/repositories/cached/reposi
 import { BuildLetterTemplate } from "./application/services/build-template/services";
 import { SendingLetterController } from "./infra/http/sending/controller";
 import { SendingLetterUsecase } from "./application/usecase/sending/usecase";
+import { MetricsMiddleware } from "../../middleware/metrics.middleware";
 
 @Module({
     imports: [SharedModule, ],
@@ -27,7 +28,6 @@ import { SendingLetterUsecase } from "./application/usecase/sending/usecase";
         },
     ]
 })
-export class LetterModule {
-
+export class LetterModule  {
 
 }
