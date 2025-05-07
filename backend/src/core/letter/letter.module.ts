@@ -9,6 +9,8 @@ import { CachedLetterRepository } from "./domain/port/repositories/cached/reposi
 import { BuildLetterTemplate } from "./application/services/build-template/services";
 import { SendingLetterController } from "./infra/http/sending/controller";
 import { SendingLetterUsecase } from "./application/usecase/sending/usecase";
+import { LetterRepository } from "./domain/port/repositories/prisma/letter.repository";
+import { LetterRepositoryImpl } from "./infra/prisma/letter.repository";
 
 @Module({
     imports: [SharedModule, ],
@@ -25,6 +27,10 @@ import { SendingLetterUsecase } from "./application/usecase/sending/usecase";
             provide: CachedLetterRepository,
             useClass: CachedLetterRepositoryImpl
         },
+        {
+            provide: LetterRepository,
+            useClass: LetterRepositoryImpl
+        }
     ]
 })
 export class LetterModule {
