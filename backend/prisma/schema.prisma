@@ -31,6 +31,7 @@ model ProductByBank {
 
 }
 
+
 model Product {
   id        String   @id @default(cuid())
   name     String
@@ -42,3 +43,51 @@ model Product {
   @@map("products")
 }
 
+model User {
+  id String @id @default(cuid())
+  name String 
+  email String 
+  password String
+  profile Profile 
+
+  client Client[]
+
+  @@map("user")
+}
+
+model Client {
+  cnpj String
+  userId String @map("user_id") 
+  user User @relation(fields: [userId], references: [id])
+
+  letter Letter[]
+  @@id([cnpj, userId])
+  @@map("client")
+
+}
+
+model Letter {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  cnpj      String 
+  nexera String
+  finnet String
+  status Status
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  client    Client   @relation(fields: [cnpj, userId], references: [cnpj, userId])
+
+  @@map("letter")
+}
+
+
+enum Status {
+  SEND
+  PENDING
+}
+
+enum Profile {
+  CLIENT
+  ADMIN
+}

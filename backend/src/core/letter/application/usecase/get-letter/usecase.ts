@@ -10,7 +10,8 @@ export class GetLetterUseCase {
     constructor(
         private readonly bankRepository: BankRepository,
         private readonly cached: CachedLetterRepository,
-        private readonly build: BuildLetterTemplate
+        private readonly build: BuildLetterTemplate,
+        private readonly repository: 
     ) { }
     
     async execute(input: GetLetterInput){
@@ -59,7 +60,7 @@ export class GetLetterUseCase {
             }
         );
 
-        await this.cached.set(letter.hashed, JSON.stringify(letter.data))
+        await this.cached.set(letter.hashed, JSON.stringify(letter.data));
         return letter;
     }
 }

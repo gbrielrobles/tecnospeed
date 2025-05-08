@@ -5,12 +5,12 @@ import { CachedLetterRepository } from "core/letter/domain/port/repositories/cac
 @Injectable()
 export class SendingLetterUsecase {
     constructor(
-        private readonly letterRepository: CachedLetterRepository,
+        private readonly cache: CachedLetterRepository,
     ) {}
 
     async execute(input: SendingLetterInput): Promise<void> {
         const { bankId, hashed } = input;
-        const contractToSending = await this.letterRepository.get(hashed);
+        const contractToSending = await this.cache.get(hashed);
 
         if (!contractToSending) {
             throw new Error("Contract not found");
