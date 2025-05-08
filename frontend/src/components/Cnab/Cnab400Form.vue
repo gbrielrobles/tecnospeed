@@ -117,7 +117,6 @@
           type="text"
           id="cnpj"
           v-model="form.cnpj"
-          v-mask="'##.###.###/####-##'"
           class="form-input"
           required
         />

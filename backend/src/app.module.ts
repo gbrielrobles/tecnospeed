@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
-import { BankRepository } from './core/bank/domain/port/repositories/bank.repository';
-import { BankRepositoryImpl } from './core/bank/infra/database/repositories/bank/bank.repository';
+import { MiddlewareConsumer, Module, NestModule, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { SharedModule } from 'shared/shared.module';
 import { BankModule } from 'core/bank/bank.module';
 import { LetterModule } from 'core/letter/letter.module';
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { makeCounterProvider, PrometheusModule,makeGaugeProvider, InjectMetric } from '@willsoto/nestjs-prometheus';
+import { MetricsMiddleware } from 'middleware/metrics.middleware';
+import { Counter, Gauge } from 'prom-client';
+import { clearInterval } from 'timers';
 
 @Module({
   imports: [
@@ -15,5 +16,37 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
       path: '/metrics',
     })
   ],
+  providers: [
+    makeGaugeProvider({
+      name: "uptime_metric",
+      help: "Uptime of the application",
+      labelNames: ["app"],
+    }),
+  ]
 })
-export class AppModule {}
+export class AppModule implements NestModule, OnModuleInit, OnModuleDestroy{
+  private startTime: number;
+  private interval: NodeJS.Timeout;
+  constructor(
+    @InjectMetric("uptime_metric") public counter: Gauge<string>
+  ) { }
+  
+  onModuleInit() {
+    this.startTime = Date.now();
+    this.interval = setInterval(() => {
+      const uptime = Date.now() - this.startTime;
+      this.counter.set({ app: "app" },uptime);
+    },
+      5000);
+  }
+
+  onModuleDestroy() {
+    clearInterval(this.interval);
+  }
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(MetricsMiddleware)
+      .forRoutes('*');
+  }
+}

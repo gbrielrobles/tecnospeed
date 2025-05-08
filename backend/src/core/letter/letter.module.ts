@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { SharedModule } from "shared/shared.module";
 import { LetterController } from "./infra/http/get-letter/controller";
 import { GetLetterUseCase } from "./application/usecase/get-letter/usecase";
@@ -11,6 +11,8 @@ import { SendingLetterController } from "./infra/http/sending/controller";
 import { SendingLetterUsecase } from "./application/usecase/sending/usecase";
 import { LetterRepository } from "./domain/port/repositories/prisma/letter.repository";
 import { LetterRepositoryImpl } from "./infra/prisma/letter.repository";
+import { MetricsMiddleware } from "../../middleware/metrics.middleware";
+
 
 @Module({
     imports: [SharedModule, ],
@@ -33,7 +35,6 @@ import { LetterRepositoryImpl } from "./infra/prisma/letter.repository";
         }
     ]
 })
-export class LetterModule {
-
+export class LetterModule  {
 
 }
