@@ -11,7 +11,6 @@ export class GetLetterUseCase {
         private readonly bankRepository: BankRepository,
         private readonly cached: CachedLetterRepository,
         private readonly build: BuildLetterTemplate,
-        private readonly repository: 
     ) { }
     
     async execute(input: GetLetterInput){

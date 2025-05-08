@@ -29,10 +29,10 @@ import { MetricsMiddleware } from "../../middleware/metrics.middleware";
             provide: CachedLetterRepository,
             useClass: CachedLetterRepositoryImpl
         },
-        {
-            provide: LetterRepository,
-            useClass: LetterRepositoryImpl
-        }
+        // {
+        //     provide: LetterRepository,
+        //     useClass: LetterRepositoryImpl
+        // }
     ]
 })
 export class LetterModule  {

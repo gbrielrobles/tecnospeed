@@ -8,13 +8,13 @@ export class LetterRepositoryImpl implements LetterRepository {
     }
 
     async getHistory(userId: string){
-        return this.adapter.letter.findMany({
-            where: {
-                client :{
-                    userId: userId
-                }
-            }
-        })
+        // return this.adapter.letter.findMany({
+        //     where: {
+        //         client :{
+        //             userId: userId
+        //         }
+        //     }
+        // })
     }
 
     async push(event$){
