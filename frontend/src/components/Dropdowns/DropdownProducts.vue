@@ -109,28 +109,28 @@ export default {
   },
   methods: {
     async fetchProducts(bankId) {
-    this.loading = true;
-    this.error = null;
-    this.selectedProducts = [];
-    this.products = [];
-    this.bankData = null;
-            
-    try {
-      const response = await fetch(`http://localhost:8000/bank/${bankId}`); 
-      if (!response.ok) throw new Error('Falha ao carregar produtos');
-      
-      const data = await response.json();
-      this.products = data.products || [];
-      this.bankData = data;
-      
-    } catch (err) {
-      console.error('Erro ao buscar produtos:', err);
-      this.error = err.message;
+      this.loading = true;
+      this.error = null;
+      this.selectedProducts = [];
       this.products = [];
-    } finally {
-      this.loading = false;
-    }
-  },
+      this.bankData = null;
+              
+      try {
+        const response = await fetch(`http://localhost:8000/bank/${bankId}`); 
+        if (!response.ok) throw new Error('Falha ao carregar produtos');
+        
+        const data = await response.json();
+        this.products = data.products || [];
+        this.bankData = data;
+        
+      } catch (err) {
+        console.error('Erro ao buscar produtos:', err);
+        this.error = err.message;
+        this.products = [];
+      } finally {
+        this.loading = false;
+      }
+    },
     isProductSelected(productId) {
       return this.selectedProducts.includes(productId);
     },

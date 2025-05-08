@@ -30,10 +30,14 @@
       <Cnab240Form
         v-if="selectedCnabType === 'CNAB240'"
         ref="cnab240Form"
+        formType="CNAB240"
         :initial-data="bankData"
         :bank="bank"
         :products="products"
+        :bankId="bankId"
+        :bank-name="bank"
         @update="updateBankData"
+        :productsIds="initialProductIds"
       />
       
       <Cnab400Form
@@ -95,10 +99,20 @@ export default defineComponent({
       type: String,
       default: ''
     },
+    bankId: {
+      type: String,
+      default: ''
+    },
     products: {
       type: String,
       default: ''
-    }
+    },
+    initialProductIds: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
   },
   data() {
     return {

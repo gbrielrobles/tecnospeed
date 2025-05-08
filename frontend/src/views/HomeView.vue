@@ -19,7 +19,7 @@
         @update-products="updateProducts"
         @update-bank="updateBank"
         @update-company="updateCompany"
-        :bank-id="selectedValues.bankId"
+        :bankId="selectedValues.bankId"
         :cnab-types="selectedValues.cnabTypes"
         :initial-company-data="selectedValues.companyData"
         :initial-bank-data="selectedValues.bankData"

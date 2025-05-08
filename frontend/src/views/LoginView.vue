@@ -50,15 +50,6 @@ export default {
     const token = ref('');
 
     const handleLogin = () => {
-      const cnpjLimpo = cnpj.value.replace(/\D/g, '');
-      
-      if (!cnpjLimpo || !token.value) {
-        alert('Por favor, preencha CNPJ e Token');
-        return;
-      }
-      
-      console.log('CNPJ (limpo):', cnpjLimpo);
-      console.log('Token:', token.value);
       router.push('/home');
     };
 
