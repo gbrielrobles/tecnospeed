@@ -49,7 +49,7 @@ export class GetLetterUseCase {
                     cnpj: input.cnpj,
                     companyContact: input.companyContact,
                     legalName: input.legalName,
-                    preferenceByContact: Object.entries(PREFERENCES_CONTACT).map(([key, value])=> {
+                    preferenceByContact: Object.entries(PREFERENCES_CONTACT).map(([key, value]) => {
                         return {
                             description: key,
                             selected: input.preferenceByContact.includes(value as PREFERENCES_CONTACT),

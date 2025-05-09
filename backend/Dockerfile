@@ -1,13 +1,15 @@
 FROM node:24.0.0-slim
 WORKDIR /src
-COPY package*.json .
-RUN npm install 
 RUN apt-get update -y && apt-get install -y openssl
 RUN apt-get update && apt-get install -y procps
+RUN npm install -g yarn --force
+
+COPY package*.json .
+RUN yarn install 
 COPY . .  
 
-RUN npx prisma generate
-RUN npm run database:seed
+RUN yarn prisma generate
+RUN yarn run database:seed
 
 EXPOSE 8000
-CMD ["npm", "run", "start:dev"]
+CMD yarn prisma generate && yarn run start:dev

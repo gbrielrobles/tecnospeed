@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,82 +8,76 @@ datasource db {
 }
 
 model Bank {
-  id String @id @default(cuid())
-  code     String   @unique
-  name      String  
-  cnabs     String 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String          @id @default(cuid())
+  name          String
+  cnabs         String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  code          String          @unique
   ProductByBank ProductByBank[]
+
   @@map("banks")
 }
 
 model ProductByBank {
   id        String   @id @default(cuid())
-  productId String  @map("product_id")
-  bankId String  @map("bank_id")
+  productId String   @map("product_id")
+  bankId    String   @map("bank_id")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  product Product  @relation(fields: [productId], references: [id])  
-  bank Bank  @relation(fields: [bankId], references: [id])
-  @@map("product-bank")
+  bank      Bank     @relation(fields: [bankId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
 
+  @@map("product-bank")
 }
 
-
 model Product {
-  id        String   @id @default(cuid())
-  name     String
-  description      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String          @id @default(cuid())
+  description   String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  name          String
   ProductByBank ProductByBank[]
 
   @@map("products")
 }
 
 model User {
-  id String @id @default(cuid())
-  name String 
-  email String 
+  id       String  @id @default(cuid())
+  name     String
+  email    String
   password String
-  profile Profile 
-
-  client Client[]
+  profile  Profile
+  client   Client? @relation("UserClient")
 
   @@map("user")
 }
 
 model Client {
-  cnpj String
-  userId String @map("user_id") 
-  user User @relation(fields: [userId], references: [id])
-
+  cnpj   String
+  userId String   @id @map("user_id")
+  user   User     @relation("UserClient", fields: [userId], references: [id])
   letter Letter[]
-  @@id([cnpj, userId])
-  @@map("client")
 
+  @@map("client")
 }
 
 model Letter {
   id        String   @id @default(cuid())
-  userId    String   @map("user_id")
-  cnpj      String 
-  nexera String
-  finnet String
-  status Status
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-
-  client    Client   @relation(fields: [cnpj, userId], references: [cnpj, userId])
+  finnet    String
+  nexera    String
+  status    Status
+  userId    String   @map("user_id")
+  client    Client   @relation(fields: [userId], references: [userId])
 
   @@map("letter")
 }
 
-
 enum Status {
   SEND
-  PENDING
+  CANCELED
 }
 
 enum Profile {
