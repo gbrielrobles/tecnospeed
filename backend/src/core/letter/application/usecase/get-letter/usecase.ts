@@ -59,7 +59,7 @@ export class GetLetterUseCase {
             }
         );
 
-        await this.cached.set(letter.hashed, JSON.stringify(letter.data));
+        await this.cached.set(letter.hashed, JSON.stringify(input));
         return letter;
     }
 }
