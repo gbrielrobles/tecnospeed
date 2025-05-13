@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CreatedLetterEvent } from "core/letter/domain/events/actions/created/created-letter.event";
-import { UpdatedLetterEvent } from "core/letter/domain/events/actions/updated/updated-letter.event";
+import { Letter } from "@prisma/client";
 import { LetterRepository } from "core/letter/domain/port/repositories/prisma/letter.repository";
 import { PrismaAdapter } from "shared/infra/database/prisma/adapter";
 
@@ -16,25 +15,20 @@ export class LetterRepositoryImpl implements LetterRepository {
         })
     }
 
-    async push(event$ : CreatedLetterEvent | UpdatedLetterEvent){
-        if(event$ instanceof CreatedLetterEvent) {
-        await this.prisma.letter.create({
-            data: {
-                ...event$.data, 
-                status: event$.data.status as any,
-            }
-        });
-    }else {
-        await this.prisma.letter.update({
-            where: {
-                id: event$.data.bankId
+    async push(event$ : Letter){
+        const {id ,...rest} = event$; 
+        await this.prisma.letter.upsert({
+            create: {
+                ...rest, 
+                status: event$.status
             },
-            data: {
-                ...event$.data,
-                status: event$.data.status as any
-            }
-        })
-    }
+            update: {
+                ...rest,
+            },
+             where : {
+                id: id
+             }
+        });
 
     }
 }

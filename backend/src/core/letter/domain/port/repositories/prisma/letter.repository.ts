@@ -1,7 +1,6 @@
-import { CreatedLetterEvent } from "core/letter/domain/events/actions/created/created-letter.event";
-import { UpdatedLetterEvent } from "core/letter/domain/events/actions/updated/updated-letter.event";
+import { Letter } from "@prisma/client";
 
 export abstract class LetterRepository {
     abstract getHistory(userId: string);
-    abstract push(event$: CreatedLetterEvent | UpdatedLetterEvent);
+    abstract push(event$: Letter);
 }

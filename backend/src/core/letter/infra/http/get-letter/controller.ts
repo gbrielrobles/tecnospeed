@@ -11,6 +11,7 @@ export class LetterController {
     @Post('letter')
     async getLetter(@Body() request: GetLetterRequest) {
         return await this.usecase.execute(request.toInput());
+
     }
 
 }

@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post, Render } from "@nestjs/common";
-import { GetLetterUseCase } from "core/letter/application/usecase/get-letter/usecase";
 import { LetterSendingRequest } from "./request";
 import { SendingLetterUsecase } from "core/letter/application/usecase/sending/usecase";
 
