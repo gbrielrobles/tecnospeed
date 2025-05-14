@@ -24,13 +24,6 @@ export class SendingLetterUsecase {
         }
 
         const data = FormLetter.buildPlain(JSON.parse(result));
-        data.bank.products.push({
-            description: 'teste',
-            id: 'wjaodw',
-            name: 'teste',
-            selected: false
-        });
-
         const productsToSending = data.bank.products.filter((prod) => prod.selected == true);
 
         const contractToSending = productsToSending.map(prod => {
