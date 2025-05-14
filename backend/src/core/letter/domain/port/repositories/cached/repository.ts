@@ -1,4 +1,4 @@
 export abstract class CachedLetterRepository {
-    abstract set(key: string, content: string) : Promise<void>;
+    abstract set<T>(key: string, content: T) : Promise<void>;
     abstract get(key: string): Promise<string | null>; 
 }

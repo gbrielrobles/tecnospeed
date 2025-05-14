@@ -1,4 +1,4 @@
-import { generatorId } from "utils/generator-id";
+import { generateId } from "utils/generate-id";
 import { LetterSendingRequest } from "../infra/http/sending/request";
 import { SendingLetterStatus } from "./enum/status-letter";
 import { IsDate, IsEnum, isEnum, IsString } from "class-validator";
@@ -55,7 +55,7 @@ export class Letter {
     async create(data: Omit<Letter, 'id' | 'createdAt' | 'updatedAt'>) : Promise<Letter> {
         return await Letter.fromPlain({
             ...data,
-            id: generatorId(),
+            id: generateId(),
             createdAt: new Date(),
             updatedAt: new Date()
         });

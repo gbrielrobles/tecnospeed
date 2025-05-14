@@ -86,7 +86,6 @@ export class GetLetterRequest {
             cnpj: this.cnpj,
             legalName: this.legalName,
             companyContact: this.companyContact,
-            hashed: this.hashed,
             agreement: this.agreement,
             preferenceByContact: this.preferenceByContact
         }

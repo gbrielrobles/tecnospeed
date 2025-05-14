@@ -1,20 +1,11 @@
 import * as fs from 'fs';
 import * as hbs from 'handlebars';
 import { fromRootTemplate } from "utils/from-template";
-import * as crypto from "crypto"
 import { FormLetter } from 'core/letter/domain/form-letter';
 
 export abstract class FactoryLetter {
     static build(pathToTemplate: string, input: FormLetter) {
-        const data = FactoryLetter.compilatorFromTemplate(pathToTemplate, input)
-        return {
-            data: data,
-            hashed: FactoryLetter.generatedHash(data)
-        }
-    }
-
-    static generatedHash(data): string {
-       return crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
+        return FactoryLetter.compilatorFromTemplate(pathToTemplate, input);
     }
 
     static compilatorFromTemplate(pathToTemplate: string, input: FormLetter) {

@@ -11,7 +11,6 @@ export class GetLetterInput {
     cnpj: string;
     legalName: string;
     companyContact: Contact;
-    hashed?: string;
     agreement: string;
     preferenceByContact: PREFERENCES_CONTACT[];
     bank: Bank;  

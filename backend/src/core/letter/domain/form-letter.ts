@@ -119,12 +119,8 @@ export class FormLetter {
     client: Client; 
 
     static fromPlain(plain) {
-        return Domain.new(this, plain)
-    }
 
-    static toBuild(data: any) {
-        return FormLetter.fromPlain(data)
-        
+        return Domain.new(this, plain)
     }
 
     static buildPlain(plain) {

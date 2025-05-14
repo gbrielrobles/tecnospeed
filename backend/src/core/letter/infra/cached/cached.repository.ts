@@ -8,8 +8,8 @@ export class CachedLetterRepositoryImpl implements CachedLetterRepository {
     private readonly baseKey = 'html-content-letter:';
     constructor(private readonly redis: RedisAdapter) {}
     
-    async set(key: string, content: string) : Promise<void> {
-        await this.redis.getConnection.set(this.baseKey.concat(key), content);
+    async set<T>(key: string, content: T) : Promise<void> {
+        await this.redis.getConnection.set(this.baseKey.concat(key), JSON.stringify(content));
     }
 
     async get(key: string): Promise<string | null> {
