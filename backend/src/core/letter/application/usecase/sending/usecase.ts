@@ -1,4 +1,3 @@
-import { SendingLetterInput } from "./input";
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { ContractNotFoundException } from "core/letter/domain/exceptions/contract-not-fount";
@@ -15,8 +14,7 @@ export class SendingLetterUsecase {
         private readonly build: BuildLetterTemplate
     ) {}
 
-    async execute(input: SendingLetterInput): Promise<any> {
-        const { bankId, hashed } = input;
+    async execute(hashed: string): Promise<any> {
         const result = await this.cache.get(hashed);
 
         if(!result) {
@@ -24,6 +22,7 @@ export class SendingLetterUsecase {
         }
 
         const data = FormLetter.buildPlain(JSON.parse(result));
+
         const productsToSending = data.bank.products.filter((prod) => prod.selected == true);
 
         const contractToSending = productsToSending.map(prod => {
