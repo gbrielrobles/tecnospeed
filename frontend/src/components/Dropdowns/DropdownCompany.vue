@@ -43,10 +43,14 @@
       <Cnab400Form
         v-if="selectedCnabType === 'CNAB400'"
         ref="cnab400Form"
+        formType="CNAB400"
         :initial-data="bankData"
         :bank="bank"
         :products="products"
+        :bankId="bankId"
+        :bank-name="bank"
         @update="updateBankData"
+        :productsIds="initialProductIds"
       />
 
       <div class="navigation-buttons">
