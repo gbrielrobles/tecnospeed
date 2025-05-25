@@ -1,7 +1,14 @@
-import { IsArray, IsBoolean, IsNumber, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
 import { PREFERENCES_CONTACT } from "./enum/preferences-contact.enum";
 import { Expose, Transform, Type } from "class-transformer";
 import { Domain } from "utils/domain";
+import { Carrier } from "./enum/carrier";
+
+export class IFormLetter {
+    client: Client;
+    bank: Bank;
+    carrier: Carrier;
+}
 
 export class Contact {
     @Expose()
@@ -14,7 +21,13 @@ export class Contact {
     
     @Expose()
     @IsString()
-    fone: string
+    fone: string;
+
+    @Expose()
+    @IsString()
+    @IsOptional()
+    positionCompany: string;
+    
 }
 
 export class Bank {
@@ -30,6 +43,14 @@ export class Bank {
     @IsString()
     name: string;
 
+    @Expose()
+    @IsString()
+    ufBank: string;
+
+    @Expose()
+    @IsString()
+    bankCity: string;
+        
     @Expose()
     @IsString({
         each: true
@@ -47,6 +68,7 @@ export class Bank {
     @Expose()
     @Type(() => Contact)
     bankContactManager: Contact
+    
 }
 
 
@@ -101,8 +123,6 @@ class Product {
     @IsString()
     description: string;
 
-
-    
     @Expose()
     @Transform(({value}) => value == 'true' ? true : false)
     @IsBoolean()
@@ -118,8 +138,11 @@ export class FormLetter {
     @Type(() => Client)
     client: Client; 
 
-    static fromPlain(plain) {
+    @Expose()
+    @IsEnum(Carrier)
+    carrier: Carrier;
 
+    static fromPlain(plain) {
         return Domain.new(this, plain)
     }
 
@@ -160,8 +183,8 @@ export class FormLetter {
                         selected: plain.preferenceByContact.includes(value as PREFERENCES_CONTACT),
                     }
                 })
-            }
-                        
+            },
+            carrier: plain.carrier         
         })
     }
 }

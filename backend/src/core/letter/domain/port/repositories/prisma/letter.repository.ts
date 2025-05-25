@@ -1,4 +1,4 @@
-import { Letter } from "@prisma/client";
+import { Letter } from "core/letter/domain/letter";
 
 export abstract class LetterRepository {
     abstract getHistory(userId: string);

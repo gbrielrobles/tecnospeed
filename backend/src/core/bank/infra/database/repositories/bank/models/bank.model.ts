@@ -29,16 +29,13 @@ export class BankModelWithProducts {
   @Expose({
     name: 'ProductByBank'
   })
-  @Transform(({ value }) => plainToInstance(ProductsModel, value, {excludeExtraneousValues: true})) 
+  @Type(() => ProductsModel)
   readonly products: ProductsModel[];
 
   @Expose()
   readonly code: string;
 
   @Expose()
-  @Transform(({ value }) => {
-    return JSON.parse(value as unknown as string) as string[]
-  })
   readonly cnabs: string[];
 }
 

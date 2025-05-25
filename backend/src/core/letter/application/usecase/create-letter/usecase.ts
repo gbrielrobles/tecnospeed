@@ -1,35 +1,31 @@
 import { Injectable } from "@nestjs/common";
-import { GetLetterInput } from "./input";
+import { CreateLetterInput } from "./input";
 import { BankRepository } from "core/bank/domain/port/repositories/bank.repository";
 import { CachedLetterRepository } from "core/letter/domain/port/repositories/cached/repository";
-import { BuildLetterTemplate } from "../../services/build-template/services";
 import { PREFERENCES_CONTACT } from "core/letter/domain/enum/preferences-contact.enum";
 import { BankNotFoundException } from "core/bank/domain/exceptions/bank-notfound.exception";
 import { required } from "utils/required";
 import { FormLetter } from "core/letter/domain/form-letter";
 import { generateHash } from "utils/generate-hash";
+import { StrategyTemplateBuild } from "../../strategy/template-strategy";
 
 @Injectable()
-export class GetLetterUseCase {
+export class CreateLetterUseCase {
     constructor(
         private readonly bankRepository: BankRepository,
         private readonly cached: CachedLetterRepository,
-        private readonly build: BuildLetterTemplate,
     ) { }
     
-    async execute(input: GetLetterInput){
+    async execute(input: CreateLetterInput) {
         const result = await this.bankRepository.findById(input.bank.bankId);
-    
         if(!result) throw new BankNotFoundException()
-
         const data = Object.assign(result, input)
-
         const instanceLetter = FormLetter.buildPlain(data);
-        const letter = this.build.createLetter(instanceLetter);
-        const hashed = generateHash(letter);
+        const template = StrategyTemplateBuild.getHtml(instanceLetter.bank.id, instanceLetter, input.carrier)
+        const hashed = generateHash(template);
         await this.cached.set(hashed, data);
         return {
-            ...letter,
+            template,
             hashed
         };
     }

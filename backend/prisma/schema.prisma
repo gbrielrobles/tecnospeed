@@ -10,7 +10,8 @@ datasource db {
 model Bank {
   id            String          @id @default(cuid())
   name          String
-  cnabs         String
+  cnabs         Cnabs[]
+  carriers      Carrier[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   code          String          @unique
@@ -28,7 +29,7 @@ model ProductByBank {
   bank      Bank     @relation(fields: [bankId], references: [id])
   product   Product  @relation(fields: [productId], references: [id])
 
-  @@map("product-bank")
+  @@map("product_bank")
 }
 
 model Product {
@@ -42,45 +43,44 @@ model Product {
   @@map("products")
 }
 
-model User {
-  id       String  @id @default(cuid())
-  name     String
-  email    String
-  password String
-  profile  Profile
-  client   Client? @relation("UserClient")
-
-  @@map("user")
-}
-
 model Client {
-  cnpj   String
-  userId String   @id @map("user_id")
-  user   User     @relation("UserClient", fields: [userId], references: [id])
+  id    String @id @default(cuid())
+  cnpj  String
+  token String
+
   letter Letter[]
 
   @@map("client")
 }
 
 model Letter {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  finnet    String
-  nexera    String
-  status    Status
-  userId    String   @map("user_id")
-  client    Client   @relation(fields: [userId], references: [userId])
+  id        String          @id @default(cuid())
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+  status    StatusOfSending
+  carrier   Carrier
+  clientId  String          @map("client_id")
+
+  client Client @relation(fields: [clientId], references: [id])
+  ticket String
 
   @@map("letter")
 }
 
-enum Status {
-  SEND
-  CANCELED
+enum Cnabs {
+  CNAB240
+  CNAB400
+  CNAB444
 }
 
-enum Profile {
-  CLIENT
-  ADMIN
+enum StatusOfSending {
+  SENDING
+  CANCELED
+  PENDING
+  COMPLETED
+}
+
+enum Carrier {
+  FINNET
+  NEXXERA
 }

@@ -4,6 +4,20 @@ import { SendingLetterStatus } from "./enum/status-letter";
 import { IsDate, IsEnum, isEnum, IsString } from "class-validator";
 import { classToPlain, Expose, plainToClass, plainToInstance, Type } from "class-transformer";
 import { Domain } from "utils/domain";
+import { Carrier } from "./enum/carrier";
+
+export class ILetter { 
+    id: string;
+    clientId: string;
+    letter: string;
+    carrier: Carrier
+    bankId: string; 
+    status: SendingLetterStatus;
+    ticket: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 
 export class Letter {
     @Expose()
@@ -12,23 +26,19 @@ export class Letter {
 
     @Expose()
     @IsString()
-    userId: string;
+    clientId: string;
 
     @Expose()
     @IsString()
-    nexera: string;
+    letter: string;
+      
+    @Expose()
+    @IsEnum(Carrier)
+    carrier: Carrier
 
     @Expose()
     @IsString()
     bankId: string; 
-
-    @Expose()
-    @IsString()
-    productId: string;
-
-    @Expose()
-    @IsString()
-    finnet: string;
 
     @Expose()
     @IsEnum(SendingLetterStatus)
@@ -49,10 +59,10 @@ export class Letter {
     updatedAt: Date;
 
     static fromPlain(plain) {
-        return Domain.new(this, plain);
+            return Domain.new(this, plain);
     }
 
-    async create(data: Omit<Letter, 'id' | 'createdAt' | 'updatedAt'>) : Promise<Letter> {
+    async create(data: Omit<ILetter, 'id' | 'createdAt' | 'updatedAt'>) : Promise<Letter> {
         return await Letter.fromPlain({
             ...data,
             id: generateId(),
@@ -61,7 +71,7 @@ export class Letter {
         });
     }
 
-    async update(data: Omit<Letter, 'createdAt'>)  {
+    async update(data: Omit<ILetter, 'createdAt'>)  {
         return await Letter.fromPlain({
             ...data,
             update: new Date()

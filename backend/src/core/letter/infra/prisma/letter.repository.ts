@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Letter } from "@prisma/client";
+import { Letter } from "core/letter/domain/letter";
 import { LetterRepository } from "core/letter/domain/port/repositories/prisma/letter.repository";
 import { PrismaAdapter } from "shared/infra/database/prisma/adapter";
 
@@ -7,10 +7,10 @@ import { PrismaAdapter } from "shared/infra/database/prisma/adapter";
 export class LetterRepositoryImpl implements LetterRepository {
     constructor(private readonly prisma : PrismaAdapter) {}
 
-    async getHistory(userId: string){
+    async getHistory(id: string){
         return await this.prisma.letter.findMany({
             where: {
-              userId: userId
+              clientId: id
             }
         })
     }
@@ -20,10 +20,11 @@ export class LetterRepositoryImpl implements LetterRepository {
         await this.prisma.letter.upsert({
             create: {
                 ...rest, 
-                status: event$.status
+                status: rest.status as any
             },
             update: {
                 ...rest,
+                status: rest.status as any
             },
              where : {
                 id: id

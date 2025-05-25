@@ -1,17 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { plainToInstance } from "class-transformer";
 import { ContractNotFoundException } from "core/letter/domain/exceptions/contract-not-fount";
 import { FormLetter } from "core/letter/domain/form-letter";
 import { CachedLetterRepository } from "core/letter/domain/port/repositories/cached/repository";
-import { LetterRepository } from "core/letter/domain/port/repositories/prisma/letter.repository";
-import { required } from "utils/required";
-import { BuildLetterTemplate } from "../../services/build-template/services";
+import { StrategyTemplateBuild } from "../../strategy/template-strategy";
 
 @Injectable()
 export class SendingLetterUsecase {
     constructor(
         private readonly cache: CachedLetterRepository,
-        private readonly build: BuildLetterTemplate
     ) {}
 
     async execute(hashed: string): Promise<any> {
@@ -26,17 +22,13 @@ export class SendingLetterUsecase {
         const productsToSending = data.bank.products.filter((prod) => prod.selected == true);
 
         const contractToSending = productsToSending.map(prod => {
-            return this.build.createLetter({
-                ...data,
+            return StrategyTemplateBuild.getHtml(data.bank.id, {
+                ...data, 
                 bank: {
-                    bankContactManager: data.bank.bankContactManager,
+                    ...data.bank,
                     products: [prod],
-                    cnabs: data.bank.cnabs,
-                    code:data.bank.code,
-                    id: data.bank.id,
-                    name: data.bank.name
                 }
-            })
+           }, data.carrier)
         });
         
         return contractToSending;

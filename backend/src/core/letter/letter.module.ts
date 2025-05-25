@@ -1,12 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { SharedModule } from "shared/shared.module";
-import { LetterController } from "./infra/http/get-letter/controller";
-import { GetLetterUseCase } from "./application/usecase/get-letter/usecase";
+import { LetterController } from "./infra/http/create-letter/controller";
+import { CreateLetterUseCase } from "./application/usecase/create-letter/usecase";
 import { BankRepository } from "core/bank/domain/port/repositories/bank.repository";
 import { BankRepositoryImpl } from "core/bank/infra/database/repositories/bank/bank.repository";
 import { CachedLetterRepositoryImpl } from "./infra/cached/cached.repository";
 import { CachedLetterRepository } from "./domain/port/repositories/cached/repository";
-import { BuildLetterTemplate } from "./application/services/build-template/services";
 import { SendingLetterController } from "./infra/http/sending/controller";
 import { SendingLetterUsecase } from "./application/usecase/sending/usecase";
 import { LetterRepository } from "./domain/port/repositories/prisma/letter.repository";
@@ -19,8 +18,7 @@ import { MetricsMiddleware } from "../../middleware/metrics.middleware";
     controllers: [LetterController, SendingLetterController],
     providers: [
         SendingLetterUsecase,
-        GetLetterUseCase,
-        BuildLetterTemplate,
+        CreateLetterUseCase,
         {
             provide: BankRepository,
             useClass: BankRepositoryImpl,

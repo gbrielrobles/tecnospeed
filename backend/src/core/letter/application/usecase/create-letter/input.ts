@@ -1,3 +1,4 @@
+import { Carrier } from "@prisma/client";
 import { PREFERENCES_CONTACT } from "core/letter/domain/enum/preferences-contact.enum";
 
 class Contact {
@@ -7,15 +8,15 @@ class Contact {
     positionCompany ?: string;
 }
 
-export class GetLetterInput {
+export class CreateLetterInput {
     cnpj: string;
     legalName: string;
     companyContact: Contact;
     agreement: string;
     preferenceByContact: PREFERENCES_CONTACT[];
     bank: Bank;  
+    carrier: Carrier
 }
-
 
 class Bank {
     bankId: string;

@@ -1,6 +1,7 @@
+import { Carrier } from "@prisma/client";
 import { Type } from "class-transformer";
 import { IsArray, IsBoolean, IsDefined, IsEmail, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator"
-import { GetLetterInput } from "core/letter/application/usecase/get-letter/input";
+import { CreateLetterInput } from "core/letter/application/usecase/create-letter/input";
 import { PREFERENCES_CONTACT } from "core/letter/domain/enum/preferences-contact.enum";
 
 class Contact {
@@ -71,7 +72,7 @@ export class GetLetterRequest {
     @IsString()
     hashed?: string
 
-    toInput() : GetLetterInput {
+    toInput(carrier: Carrier) : CreateLetterInput {
         return {
             bank: {
                 accountNumber: this.accountNumber,
@@ -87,7 +88,8 @@ export class GetLetterRequest {
             legalName: this.legalName,
             companyContact: this.companyContact,
             agreement: this.agreement,
-            preferenceByContact: this.preferenceByContact
+            preferenceByContact: this.preferenceByContact,
+            carrier: carrier
         }
     }
 }

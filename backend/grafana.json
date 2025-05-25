@@ -100,7 +100,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "up{instance=\"app:8000\"}",
+          "expr": "up{instance=\"localhost:8000\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -236,7 +236,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "nodejs_eventloop_lag_seconds{job=\"app\"}",
+          "expr": "nodejs_eventloop_lag_seconds{instance=\"localhost:8000\"}",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
@@ -336,12 +336,12 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
+                "color": "red",
                 "value": null
               },
               {
-                "color": "red",
-                "value": 20
+                "color": "super-light-red",
+                "value": 10
               },
               {
                 "color": "#EAB839",
@@ -389,8 +389,8 @@
             "uid": "aekmmjukusjk0a"
           },
           "disableTextWrap": false,
-          "editorMode": "code",
-          "expr": "uptime_metric{app=\"app\"} / 1000",
+          "editorMode": "builder",
+          "expr": "uptime_metric{instance=\"localhost:8000\"} / 1000",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -465,7 +465,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "nodejs_version_info{instance=\"app:8000\"}",
+          "expr": "nodejs_version_info{instance=\"localhost:8000\"}",
           "format": "table",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
@@ -601,6 +601,6 @@
   "timezone": "browser",
   "title": "dashboard_tecno",
   "uid": "eekmmqneb14hsb",
-  "version": 12,
+  "version": 17,
   "weekStart": ""
 }

@@ -11,7 +11,9 @@ export class Domain {
 
         const errors = validateSync(instance);
 
-        have(errors, () => new UnprocessableEntityException());
+        if (errors.length >= 1) {
+            throw new UnprocessableEntityException()            
+        }
         
         return instance as T;
     } 
