@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { PrismaAdapter } from "./infra/database/prisma/adapter";
 import { RedisAdapter } from "./infra/redis/adapter";
-import { ConnectorBullMQ } from "./infra/bull/connector";
+import { BullDashMQModule } from "./infra/bull/dashboard.module";
 
 @Module({
-    exports: [PrismaAdapter, RedisAdapter, ConnectorBullMQ],
-    providers: [PrismaAdapter, RedisAdapter, ConnectorBullMQ]
+    exports: [PrismaAdapter, RedisAdapter],
+    providers: [PrismaAdapter, RedisAdapter]
 })
 export class SharedModule {}

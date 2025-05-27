@@ -10,7 +10,7 @@ import { SendingLetterController } from "./infra/http/sending/controller";
 import { SendingLetterUsecase } from "./application/usecase/sending/usecase";
 import { LetterRepository } from "./domain/port/repositories/prisma/letter.repository";
 import { LetterRepositoryImpl } from "./infra/prisma/letter.repository";
-import { MetricsMiddleware } from "../../middleware/metrics.middleware";
+import { LetterProducerQueue } from "./infra/bull/producer";
 
 
 @Module({
@@ -19,6 +19,7 @@ import { MetricsMiddleware } from "../../middleware/metrics.middleware";
     providers: [
         SendingLetterUsecase,
         CreateLetterUseCase,
+        LetterProducerQueue,
         {
             provide: BankRepository,
             useClass: BankRepositoryImpl,

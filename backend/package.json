@@ -39,6 +39,10 @@
     }
   },
   "dependencies": {
+    "@bull-board/api": "^6.9.6",
+    "@bull-board/express": "^6.9.6",
+    "@bull-board/nestjs": "^6.9.6",
+    "@nestjs/bullmq": "^11.0.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
@@ -50,6 +54,7 @@
     "class-validator": "^0.14.1",
     "cuid": "^3.0.0",
     "ejs": "^3.1.10",
+    "express-basic-auth": "^1.2.1",
     "hbs": "^4.2.0",
     "ioredis": "^5.6.1",
     "prisma": "^6.5.0",
