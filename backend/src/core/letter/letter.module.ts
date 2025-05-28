@@ -11,15 +11,18 @@ import { SendingLetterUsecase } from "./application/usecase/sending/usecase";
 import { LetterRepository } from "./domain/port/repositories/prisma/letter.repository";
 import { LetterRepositoryImpl } from "./infra/prisma/letter.repository";
 import { LetterProducerQueue } from "./infra/bull/producer";
+import { LetterConsumer } from "./infra/bull/consumer";
+import { HttpModule } from "@nestjs/axios";
 
 
 @Module({
-    imports: [SharedModule],
+    imports: [SharedModule, HttpModule],
     controllers: [LetterController, SendingLetterController],
     providers: [
         SendingLetterUsecase,
         CreateLetterUseCase,
         LetterProducerQueue,
+        LetterConsumer,
         {
             provide: BankRepository,
             useClass: BankRepositoryImpl,

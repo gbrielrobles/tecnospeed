@@ -12,7 +12,8 @@ export class LetterProducerQueue {
             connection: this.redis.getConnection,
             defaultJobOptions: {
                 removeOnComplete: true,
-                attempts: 3
+                attempts: 3,
+                removeOnFail: true
             }
         });
     }
