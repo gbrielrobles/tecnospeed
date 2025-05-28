@@ -21,11 +21,14 @@ export class LetterConsumer implements OnModuleInit {
 
     createWorker() {
         this.worker = new Worker(Queues.LETTER_QUEUE, async (job: Job)  => {
-            const data : {jobId: string; letter: string; eventDate: Date} = job.data;
+            const data : {jobId: string; letter: string; eventDate: Date, client: any} = job.data;
 
             const base64PDF = await BuilderPdF.create(data.letter).fromHtmlToPdf();
             await this.zapier.sendFile(base64PDF, {
-                
+                documentClient: data.client.documentClient,
+                documentSH: data.client.documentSH,
+                email: data.client.email,
+                product: data.client.product
             })
         }, {    
             connection: this.redis.getConnection,

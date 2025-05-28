@@ -3,6 +3,7 @@ import { Queue } from "bullmq";
 import { RedisAdapter } from "shared/infra/redis/adapter";
 import { Queues } from "shared/infra/bull/queues/letter.queue";
 import { generateId } from "utils/generate-id";
+
 @Injectable()
 export class LetterProducerQueue {
     private queue : Queue;
