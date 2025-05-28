@@ -18,14 +18,15 @@ export class LetterProducerQueue {
         });
     }
 
-    async publish(letter: string[]) {
+    async publish(letter: string[], client: any) {
         this.logger.log('publish letter');
         await this.queue.add(
             'LETTER_TO_ZAPIER',
             {
                 jobId: generateId(),
                 letter: JSON.stringify(letter),
-                eventDate: new Date() 
+                eventDate: new Date(),
+                client: client
             }
         );
         this.logger.log('finisheh sending');
