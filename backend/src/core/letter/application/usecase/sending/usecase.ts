@@ -23,16 +23,22 @@ export class SendingLetterUsecase {
           
         const productsToSending = data.bank.products.filter((prod) => prod.selected == true);
 
-        const contractToSending = productsToSending.flatMap(prod => {
-            return StrategyTemplateBuild.getHtml(data.bank.id, {
+        productsToSending.forEach(prod => {
+            const html = StrategyTemplateBuild.getHtml(data.bank.id, {
                 ...data, 
                 bank: {
                     ...data.bank,
                     products: [prod],
                 }
            }, data.carrier)
+
+           
         });
         
-        await this.queue.publish(contractToSending);
+        await this.queue.publish(contractToSending, {
+            cnpj: data.client.cnpj,
+            email: data.client.companyContact.email,
+            product: data.bank.products
+        });
     }
 }

@@ -14,12 +14,16 @@ export class LetterProducerQueue {
             defaultJobOptions: {
                 removeOnComplete: true,
                 attempts: 3,
-                removeOnFail: true
+                removeOnFail: false
             }
         });
     }
 
-    async publish(letter: string[], client: any) {
+    async publish(letter: string[], client: {
+        cnpj: string,
+        email: string,
+        product: string
+    }) {
         this.logger.log('publish letter');
         await this.queue.add(
             'LETTER_TO_ZAPIER',
