@@ -6,7 +6,13 @@ import { makeCounterProvider, PrometheusModule,makeGaugeProvider, InjectMetric }
 import { MetricsMiddleware } from 'middleware/metrics.middleware';
 import { Counter, Gauge } from 'prom-client';
 import { clearInterval } from 'timers';
-
+import { BullBoardModule } from '@bull-board/nestjs';
+import { ExpressAdapter } from "@bull-board/express";
+import basicAuth from "express-basic-auth";
+import { Queues } from 'shared/infra/bull/queues/letter.queue';
+import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
+import { BullModule } from "@nestjs/bullmq";
+import { BullDashMQModule } from 'shared/infra/bull/dashboard.module';
 @Module({
   imports: [
     SharedModule,
@@ -14,7 +20,8 @@ import { clearInterval } from 'timers';
     LetterModule,
     PrometheusModule.register({
       path: '/metrics',
-    })
+    }),
+    BullDashMQModule
   ],
   providers: [
     makeGaugeProvider({

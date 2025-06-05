@@ -3,11 +3,13 @@ import { ContractNotFoundException } from "core/letter/domain/exceptions/contrac
 import { FormLetter } from "core/letter/domain/form-letter";
 import { CachedLetterRepository } from "core/letter/domain/port/repositories/cached/repository";
 import { StrategyTemplateBuild } from "../../strategy/template-strategy";
+import { LetterProducerQueue } from "core/letter/infra/bull/producer";
 
 @Injectable()
 export class SendingLetterUsecase {
     constructor(
         private readonly cache: CachedLetterRepository,
+        private readonly queue: LetterProducerQueue
     ) {}
 
     async execute(hashed: string): Promise<any> {
@@ -18,19 +20,25 @@ export class SendingLetterUsecase {
         }
 
         const data = FormLetter.buildPlain(JSON.parse(result));
-
+          
         const productsToSending = data.bank.products.filter((prod) => prod.selected == true);
 
-        const contractToSending = productsToSending.map(prod => {
-            return StrategyTemplateBuild.getHtml(data.bank.id, {
+        productsToSending.forEach(prod => {
+            const html = StrategyTemplateBuild.getHtml(data.bank.id, {
                 ...data, 
                 bank: {
                     ...data.bank,
                     products: [prod],
                 }
            }, data.carrier)
+
+           
         });
         
-        return contractToSending;
+        await this.queue.publish(contractToSending, {
+            cnpj: data.client.cnpj,
+            email: data.client.companyContact.email,
+            product: data.bank.products
+        });
     }
 }

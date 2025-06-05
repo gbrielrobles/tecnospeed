@@ -50,9 +50,7 @@ export abstract class StrategyTemplateBuild {
                         }
                     }
                 }
-
-                console.log(templates);
-
+            
                 return templates ?? [];
             default:
                 return [FactoryLetter.build('default', input, carrier)];
