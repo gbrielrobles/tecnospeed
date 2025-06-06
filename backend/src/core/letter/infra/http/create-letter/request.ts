@@ -1,8 +1,15 @@
-import { Carrier } from "@prisma/client";
-import { Type } from "class-transformer";
-import { IsArray, IsBoolean, IsDefined, IsEmail, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator"
+import { Carrier, Cnabs } from "@prisma/client";
+import { Transform, Type } from "class-transformer";
+import { ArrayNotEmpty, IsArray, IsBoolean, IsDefined, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator"
 import { CreateLetterInput } from "core/letter/application/usecase/create-letter/input";
 import { PREFERENCES_CONTACT } from "core/letter/domain/enum/preferences-contact.enum";
+import { IsCnpj } from "../decorators/isCnpj";
+import { IsPhone } from "../decorators/isPhone";
+import { IsValidDDD } from "../decorators/isValidDDD";
+import { IsValidBranchNumber } from "../decorators/isValidBranchNumber";
+import { IsValidAccountNumber } from "../decorators/isValidAccountNumber";
+import { BrazilianStates } from "core/letter/domain/enum/brazillian-states";
+
 
 class Contact {
     @IsString()
@@ -11,12 +18,26 @@ class Contact {
     @IsEmail()
     email: string;
 
-    @IsString()
+    @IsPhone({ message: 'Telefone inválido. Ex: 44912345678' })
+    @IsValidDDD()
+    @Transform(({ value }) => {
+        if (typeof value !== 'string') return value;
+        
+        const digits = value.replace(/\D/g, '');
+
+        // Valida se tem pelo menos DDD (2), número (8 ou 9)
+        if (digits.length < 10 || digits.length > 11) return value;
+
+        const ddd = digits.slice(0, 2);
+        const firstPart = digits.length === 11 ? digits.slice(2, 7) : digits.slice(2, 6);
+        const secondPart = digits.length === 11 ? digits.slice(7) : digits.slice(6);
+
+        return `(${ddd}) ${firstPart}-${secondPart}`;
+    })
     fone: string;
 
     @IsString()
-    @IsOptional()
-    positionCompany?: string;
+    positionCompany: string;
 }
 
 export class GetLetterRequest {
@@ -27,12 +48,17 @@ export class GetLetterRequest {
     legalName: string;
 
     @IsString()
+    @IsCnpj()
+    @Transform(({ value }) => {
+        const digits = value.replace(/\D/g, '').padStart(14, '0');
+        return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12)}`
+    })
     cnpj: string;
 
-    @IsNumber()
+    @IsValidAccountNumber()
     accountNumber: number;
 
-    @IsNumber()
+    @IsValidBranchNumber()
     branchNumber: number;
 
     @IsArray()
@@ -40,8 +66,9 @@ export class GetLetterRequest {
     selectedProducts: string[]
 
     @IsArray()
-    @IsString({each: true})
-    selectedCnabs: string[]
+    @IsEnum(Cnabs, { each: true })
+    @ArrayNotEmpty()
+    selectedCnabs: Cnabs[];
 
     @IsDefined()
     @ValidateNested()
@@ -56,7 +83,7 @@ export class GetLetterRequest {
     @IsString()
     agreement: string
 
-    @IsString()
+    @IsEnum(BrazilianStates)
     ufBank: string
 
     @IsString()

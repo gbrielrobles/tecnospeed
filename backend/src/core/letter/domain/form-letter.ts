@@ -146,7 +146,7 @@ export class FormLetter {
         return Domain.new(this, plain)
     }
 
-    static buildPlain(plain) {
+    static create(plain) {
         return FormLetter.fromPlain({ 
             bank: {
                 id: plain.id,

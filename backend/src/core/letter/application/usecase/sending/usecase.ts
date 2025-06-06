@@ -9,7 +9,9 @@ import { LetterProducerQueue } from "core/letter/infra/bull/producer";
 export class SendingLetterUsecase {
     constructor(
         private readonly cache: CachedLetterRepository,
-        private readonly queue: LetterProducerQueue
+        private readonly queue: LetterProducerQueue,
+        private readonly strategy: StrategyTemplateBuild
+
     ) {}
 
     async execute(hashed: string): Promise<any> {
@@ -19,12 +21,12 @@ export class SendingLetterUsecase {
             throw new ContractNotFoundException()
         }
 
-        const data = FormLetter.buildPlain(JSON.parse(result));
+        const data = FormLetter.create(JSON.parse(result));
           
         const productsToSending = data.bank.products.filter((prod) => prod.selected == true);
 
         productsToSending.forEach(prod => {
-            const html = StrategyTemplateBuild.getHtml(data.bank.id, {
+            const html = this.strategy.getPdf({
                 ...data, 
                 bank: {
                     ...data.bank,
@@ -35,10 +37,10 @@ export class SendingLetterUsecase {
            
         });
         
-        await this.queue.publish(contractToSending, {
-            cnpj: data.client.cnpj,
-            email: data.client.companyContact.email,
-            product: data.bank.products
-        });
+        // await this.queue.publish(contractToSending, {
+        //     cnpj: data.client.cnpj,
+        //     email: data.client.companyContact.email,
+        //     product: data.bank.products
+        // });
     }
 }

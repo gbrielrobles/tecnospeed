@@ -13,6 +13,9 @@ import { LetterRepositoryImpl } from "./infra/prisma/letter.repository";
 import { LetterProducerQueue } from "./infra/bull/producer";
 import { LetterConsumer } from "./infra/bull/consumer";
 import { HttpModule } from "@nestjs/axios";
+import { StrategyTemplateBuild } from "./application/strategy/template-strategy";
+import { ZapierService } from "./infra/zapier/zapier";
+import { LetterFactory } from "./application/factory/build/letter";
 
 
 @Module({
@@ -23,6 +26,9 @@ import { HttpModule } from "@nestjs/axios";
         CreateLetterUseCase,
         LetterProducerQueue,
         LetterConsumer,
+        ZapierService,
+        StrategyTemplateBuild,
+        LetterFactory,
         {
             provide: BankRepository,
             useClass: BankRepositoryImpl,

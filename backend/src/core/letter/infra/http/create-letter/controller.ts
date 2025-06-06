@@ -13,6 +13,6 @@ export class LetterController {
         @Body() request: GetLetterRequest,
         @Param('carrier',  ParseToCarrier) carrier: Carrier
     ) {
-        return await this.usecase.execute(request.toInput(carrier));
+        return (await this.usecase.execute(request.toInput(carrier)));
     }
 }

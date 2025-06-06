@@ -12,14 +12,15 @@ export class CreateLetterUseCase {
     constructor(
         private readonly bankRepository: BankRepository,
         private readonly cached: CachedLetterRepository,
+        private readonly strategy: StrategyTemplateBuild
     ) { }
     
     async execute(input: CreateLetterInput) {
         const result = await this.bankRepository.findById(input.bank.bankId);
         if(!result) throw new BankNotFoundException()
         const data = Object.assign(result, input)
-        const instanceLetter = FormLetter.buildPlain(data);
-        const template = StrategyTemplateBuild.getHtml(instanceLetter.bank.id, instanceLetter, input.carrier)
+        const instanceLetter = FormLetter.create(data);
+        const template = this.strategy.getHtml(instanceLetter.bank.id, instanceLetter, input.carrier)
         const hashed = generateHash(template);
         await this.cached.set(hashed, data);
         return {
