@@ -5,14 +5,15 @@ import { CachedLetterRepository } from "core/letter/domain/port/repositories/cac
 import { BankNotFoundException } from "core/bank/domain/exceptions/bank-notfound.exception";
 import { FormLetter } from "core/letter/domain/form-letter";
 import { generateHash } from "utils/generate-hash";
-import { StrategyTemplateBuild } from "../../strategy/template-strategy";
+import { StrategyTemplateBuild } from "../../../strategy/template-strategy";
+
 
 @Injectable()
 export class CreateLetterUseCase {
     constructor(
         private readonly bankRepository: BankRepository,
         private readonly cached: CachedLetterRepository,
-        private readonly strategy: StrategyTemplateBuild
+        private readonly strategy: StrategyTemplateBuild,
     ) { }
     
     async execute(input: CreateLetterInput) {
@@ -23,6 +24,7 @@ export class CreateLetterUseCase {
         const template = this.strategy.getHtml(instanceLetter.bank.id, instanceLetter, input.carrier)
         const hashed = generateHash(template);
         await this.cached.set(hashed, data);
+
         return {
             template,
             hashed

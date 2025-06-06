@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Render } from "@nestjs/common";
 import { LetterSendingRequest } from "./request";
-import { SendingLetterUsecase } from "core/letter/application/usecase/sending/usecase";
+import { SendingLetterUsecase } from "core/letter/application/usecase/actions/sending/usecase";
 
 @Controller()
 export class SendingLetterController {

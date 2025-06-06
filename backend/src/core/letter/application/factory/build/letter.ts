@@ -28,13 +28,13 @@ export class LetterFactory {
         }
     }
 
-    buildPdf(input: FormLetter, carrier: Carrier) : Promise<string> {
+    async buildPdf(input: FormLetter, carrier: Carrier) : Promise<string> {
         switch (carrier) {
             case Carrier.FINNET: {
-                return PdfGenerator.buildTemplatePdfFinnet(input);
+                return await PdfGenerator.buildTemplatePdfFinnet(input);
             }
             case Carrier.NEXXERA: {
-                return  PdfGenerator.buildTemplatePdfNexxera(input)
+                return await PdfGenerator.buildTemplatePdfNexxera(input)
             } 
             default: {
                 throw new Error('TEMPLATE NOT FOUND');

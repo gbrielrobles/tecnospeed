@@ -59,7 +59,7 @@ CREATE TABLE "letter" (
     "status" "StatusOfSending" NOT NULL,
     "carrier" "Carrier" NOT NULL,
     "client_id" TEXT NOT NULL,
-    "ticket" TEXT NOT NULL,
+    "ticket" TEXT,
 
     CONSTRAINT "letter_pkey" PRIMARY KEY ("id")
 );

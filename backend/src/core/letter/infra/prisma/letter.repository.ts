@@ -16,15 +16,20 @@ export class LetterRepositoryImpl implements LetterRepository {
     }
 
     async push(event$ : Letter){
-        const {id ,...rest} = event$; 
+        const { id, ...rest } = event$; 
         await this.prisma.letter.upsert({
             create: {
-                ...rest, 
-                status: rest.status as any
+                letter: rest.letter,
+                carrier: rest.carrier,
+                status: rest.status as any,
+                ticket: rest.ticket,
+                clientId: rest.clientId,
+                createdAt: rest.createdAt,
+                updatedAt: rest.updatedAt,
+                id: id
             },
             update: {
-                ...rest,
-                status: rest.status as any
+                status: rest.status as any,
             },
              where : {
                 id: id

@@ -1,7 +1,7 @@
 import { generateId } from "utils/generate-id";
-import { LetterSendingRequest } from "../infra/http/sending/request";
+import { LetterSendingRequest } from "../infra/http/action/sending/request";
 import { SendingLetterStatus } from "./enum/status-letter";
-import { IsDate, IsEnum, isEnum, IsString } from "class-validator";
+import { IsArray, IsDate, IsEnum, isEnum, IsString } from "class-validator";
 import { classToPlain, Expose, plainToClass, plainToInstance, Type } from "class-transformer";
 import { Domain } from "utils/domain";
 import { Carrier } from "./enum/carrier";
@@ -29,6 +29,7 @@ export class Letter {
     clientId: string;
 
     @Expose()
+    @IsArray()
     @IsString()
     letter: string;
       
@@ -46,7 +47,7 @@ export class Letter {
 
     @Expose()
     @IsString()
-    ticket: string;
+    ticket: string | null;
 
     @Expose()
     @IsDate()
@@ -57,25 +58,5 @@ export class Letter {
     @IsDate()
     @Type(() => Date)
     updatedAt: Date;
-
-    static fromPlain(plain) {
-            return Domain.new(this, plain);
-    }
-
-    async create(data: Omit<ILetter, 'id' | 'createdAt' | 'updatedAt'>) : Promise<Letter> {
-        return await Letter.fromPlain({
-            ...data,
-            id: generateId(),
-            createdAt: new Date(),
-            updatedAt: new Date()
-        });
-    }
-
-    async update(data: Omit<ILetter, 'createdAt'>)  {
-        return await Letter.fromPlain({
-            ...data,
-            update: new Date()
-        })
-    } 
 
 }

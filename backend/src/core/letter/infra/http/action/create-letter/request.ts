@@ -1,13 +1,13 @@
 import { Carrier, Cnabs } from "@prisma/client";
 import { Transform, Type } from "class-transformer";
 import { ArrayNotEmpty, IsArray, IsBoolean, IsDefined, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator"
-import { CreateLetterInput } from "core/letter/application/usecase/create-letter/input";
+import { CreateLetterInput } from "core/letter/application/usecase/actions/create-letter/input";
 import { PREFERENCES_CONTACT } from "core/letter/domain/enum/preferences-contact.enum";
-import { IsCnpj } from "../decorators/isCnpj";
-import { IsPhone } from "../decorators/isPhone";
-import { IsValidDDD } from "../decorators/isValidDDD";
-import { IsValidBranchNumber } from "../decorators/isValidBranchNumber";
-import { IsValidAccountNumber } from "../decorators/isValidAccountNumber";
+import { IsCnpj } from "../../decorators/isCnpj";
+import { IsPhone } from "../../decorators/isPhone";
+import { IsValidDDD } from "../../decorators/isValidDDD";
+import { IsValidBranchNumber } from "../../decorators/isValidBranchNumber";
+import { IsValidAccountNumber } from "../../decorators/isValidAccountNumber";
 import { BrazilianStates } from "core/letter/domain/enum/brazillian-states";
 
 

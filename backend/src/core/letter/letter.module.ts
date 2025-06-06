@@ -1,13 +1,13 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { SharedModule } from "shared/shared.module";
-import { LetterController } from "./infra/http/create-letter/controller";
-import { CreateLetterUseCase } from "./application/usecase/create-letter/usecase";
+import { LetterController } from "./infra/http/action/create-letter/controller";
+import { CreateLetterUseCase } from "./application/usecase/actions/create-letter/usecase";
 import { BankRepository } from "core/bank/domain/port/repositories/bank.repository";
 import { BankRepositoryImpl } from "core/bank/infra/database/repositories/bank/bank.repository";
 import { CachedLetterRepositoryImpl } from "./infra/cached/cached.repository";
 import { CachedLetterRepository } from "./domain/port/repositories/cached/repository";
-import { SendingLetterController } from "./infra/http/sending/controller";
-import { SendingLetterUsecase } from "./application/usecase/sending/usecase";
+import { SendingLetterController } from "./infra/http/action/sending/controller";
+import { SendingLetterUsecase } from "./application/usecase/actions/sending/usecase";
 import { LetterRepository } from "./domain/port/repositories/prisma/letter.repository";
 import { LetterRepositoryImpl } from "./infra/prisma/letter.repository";
 import { LetterProducerQueue } from "./infra/bull/producer";
@@ -16,11 +16,13 @@ import { HttpModule } from "@nestjs/axios";
 import { StrategyTemplateBuild } from "./application/strategy/template-strategy";
 import { ZapierService } from "./infra/zapier/zapier";
 import { LetterFactory } from "./application/factory/build/letter";
+import { SearchCardHistoryController } from "./infra/http/query/fetch-history/controller";
+import { SearchCardHistoryUsecase } from "./application/usecase/query/search-card-history/usecase";
 
 
 @Module({
     imports: [SharedModule, HttpModule],
-    controllers: [LetterController, SendingLetterController],
+    controllers: [LetterController, SendingLetterController, SearchCardHistoryController],
     providers: [
         SendingLetterUsecase,
         CreateLetterUseCase,
@@ -29,6 +31,7 @@ import { LetterFactory } from "./application/factory/build/letter";
         ZapierService,
         StrategyTemplateBuild,
         LetterFactory,
+        SearchCardHistoryUsecase,
         {
             provide: BankRepository,
             useClass: BankRepositoryImpl,

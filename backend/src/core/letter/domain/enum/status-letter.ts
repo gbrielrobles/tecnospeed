@@ -1,6 +1,6 @@
 export enum SendingLetterStatus {
-    SENDING,
-    CANCELED,
-    PENDING,
-    COMPLETED
+    SENDING='SENDING',
+    CANCELED='CANCELED',
+    PENDING='PENDING',
+    COMPLETED='COMPLETED'
 }

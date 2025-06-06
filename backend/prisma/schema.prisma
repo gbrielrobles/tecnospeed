@@ -60,9 +60,10 @@ model Letter {
   status    StatusOfSending
   carrier   Carrier
   clientId  String          @map("client_id")
+  letter    String
 
-  client Client @relation(fields: [clientId], references: [id])
-  ticket String
+  client Client  @relation(fields: [clientId], references: [id])
+  ticket String?
 
   @@map("letter")
 }

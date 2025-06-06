@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { Job, Worker } from "bullmq";
-import { SendingLetterUsecase } from "core/letter/application/usecase/sending/usecase";
+import { SendingLetterUsecase } from "core/letter/application/usecase/actions/sending/usecase";
 import { Queues } from "shared/infra/bull/queues/letter.queue";
 import { RedisAdapter } from "shared/infra/redis/adapter";
 import { ZapierService } from "../zapier/zapier";

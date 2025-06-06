@@ -1,4 +1,4 @@
-import { BuildLetterOutput } from "../usecase/create-letter/output";
+import { BuildLetterOutput } from "../usecase/actions/create-letter/output";
 import { FormLetter } from "core/letter/domain/form-letter";
 import { Carrier } from "@prisma/client";
 import { Injectable } from "@nestjs/common";
@@ -13,9 +13,7 @@ export class StrategyTemplateBuild {
          return [this.factory.buildHtml('default', input, carrier)];
     }
 
-    getPdf(input: FormLetter, carrier: Carrier): string[] {
-        const pdf = this.factory.buildPdf(input, carrier);
-        console.log(pdf);
-        return [];
+    async getPdf(input: FormLetter, carrier: Carrier): Promise<string> {
+        return await this.factory.buildPdf(input, carrier);
     }
 }
