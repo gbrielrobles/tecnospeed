@@ -25,9 +25,9 @@ export class SendingLetterUsecase {
         }
 
         const data = FormLetter.create(JSON.parse(cache));
-        
-        const productsToSending = data.bank.products.filter((prod) => prod.selected == true);
 
+        const productsToSending = data.bank.products.filter((prod) => prod.selected == true);
+        console.log(productsToSending);
         productsToSending.forEach(async prod => {
             const html = await this.strategy.getHtml(data.bank.id, {
                 ...data,

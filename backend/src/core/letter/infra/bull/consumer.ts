@@ -28,6 +28,7 @@ export class LetterConsumer implements OnModuleInit {
     createWorker() {
         this.worker = new Worker(Queues.LETTER_QUEUE, async (job: Job)  => {
             const data: { jobId: string; letter: string; letterId: string; eventDate: Date, client: any} = job.data;
+            
             const response : ZapierMappedResult = await this.zapier.sendFile(data.letter, {
                 documentClient: data.client.documentClient,
                 documentSH: data.client.documentSH,

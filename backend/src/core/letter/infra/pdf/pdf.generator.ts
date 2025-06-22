@@ -146,114 +146,133 @@ export abstract class PdfGenerator {
           doc.end();
       });
   }
-    
-  static buildTemplatePdfFinnet(data: any): Promise<Base64URLString> {
-    return new Promise((resolve, reject) => {
-      const doc = new PDFDocument({ size: 'A4', margin: 30 });
-      const stream = new PassThrough();
-      const chunks: Buffer[] = [];
+static buildTemplatePdfFinnet(data: any): Promise<Base64URLString> {
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument({ size: 'A4', margin: 15 });
+    const stream = new PassThrough();
+    const chunks: Buffer[] = [];
 
-      stream.on('data', (chunk) => chunks.push(chunk));
-      stream.on('end', () => {
-        const buffer = Buffer.concat(chunks);
-        resolve(buffer.toString('base64'));
-      });
-      stream.on('error', reject);
-      doc.pipe(stream);
-
-      const PAGE_WIDTH = 595.28;
-      const CONTENT_WIDTH = PAGE_WIDTH - doc.page.margins.left - doc.page.margins.right;
-
-      const textOptions = { width: CONTENT_WIDTH, align: 'justify', lineGap: 1.2 };
-
-      const addParagraph = (text: string, spacing: number = 0.3) => {
-        doc.moveDown(spacing).fontSize(10).font('Helvetica').text(text, textOptions);
-      };
-
-      const addTitle = (text: string, spacing: number = 0.6) => {
-        doc.moveDown(spacing).fontSize(10.5).font('Helvetica-Bold').text(text, { width: CONTENT_WIDTH });
-      };
-
-      // Header
-      if (data.bank?.name) {
-        doc.fontSize(10.5).font('Helvetica-Bold').text(`Ao ${data.bank.name}`, { width: CONTENT_WIDTH });
-        doc.moveDown(0.1);
-        doc.font('Helvetica').text(`A/c ${data.bank.bankContactManager?.name ?? ''}`, { width: CONTENT_WIDTH });
-      }
-
-      addParagraph(
-        `Comunicamos que nossa empresa passou a operar os relacionamentos de EDI, transferência eletrônica, através da VAN FINNET. Solicitamos que esta Instituição disponibilize o suporte necessário para viabilizar esta implantação, onde as ações necessárias para esta migração serão conduzidas juntamente com a FINNET.`,
-        0.6
-      );
-
-      addTitle('Contratante');
-      if (data.client) {
-        addParagraph(`Razão Social: ${data.client.legalName}`);
-        addParagraph(`CNPJ: ${data.client.cnpj}`);
-        addParagraph(`Agência / Conta corrente: ${data.client.branchNumber} | ${data.client.accountNumber}`);
-        addParagraph(`Convênio: ${data.client.agreement}`);
-      }
-
-      addTitle('VAN Contratada');
-      addParagraph('Razão Social: FINNET S/A Tecnologia');
-      addParagraph('CNPJ: 05.607.266/0001-10');
-
-      addTitle('Produtos Financeiros');
-      data.bank?.products?.forEach((product: any) => {
-        const check = product.selected ? 'X' : ' ';
-        addParagraph(`(${check}) ${product.description}`, 0.2);
-      });
-
-      addParagraph('(X) Arquivo em produção', 0.5);
-
-      addParagraph('CNAB', 0.5);
-      data.bank?.cnabs?.forEach((cnab: any) => {
-        const check = cnab.selected ? 'X' : ' ';
-        addParagraph(`(${check}) ${cnab.name}`, 0.2);
-      });
-
-      addParagraph(
-        'Os custos serão assumidos 100% pela Empresa (alterar para 100% Banco se assim for acordo entre Empresa e Banco).',
-        0.5
-      );
-
-      addTitle('Contato da Empresa');
-      const contato = data.client?.companyContact;
-      if (contato) {
-        addParagraph(`Nome: ${contato.name}`);
-        addParagraph(`E-mail: ${contato.email}`);
-        addParagraph(`Telefone: ${contato.fone}`);
-      }
-
-      addTitle('Contato da VAN FINNET');
-      addParagraph('Nome: Bianca e João');
-      addParagraph('E-mail: pis.posvenda@finnet.com.br');
-      addParagraph('Telefone: (11) 94457-8493 | (11) 99189-2213');
-
-      addTitle('Responsável Técnico');
-      addParagraph('Nome: Vinicius Maier');
-      addParagraph('E-mail: viniciusmaierecw@gmail.com');
-      addParagraph('Telefone: (44) 99962-4364');
-
-      const gerente = data.bank?.bankContactManager;
-      if (gerente) {
-        addTitle('Gerente de Conta');
-        addParagraph(`Nome: ${gerente.name}`);
-        addParagraph(`E-mail: ${gerente.email}`);
-        addParagraph(`Telefone: ${gerente.fone}`);
-      }
-
-      addParagraph('Colocamo-nos à disposição para quaisquer esclarecimentos adicionais.', 0.6);
-
-      doc.moveDown(4);
-      doc.font('Helvetica-Bold').fontSize(10).text('Atenciosamente,', {
-        width: CONTENT_WIDTH,
-      });
-      doc.moveDown(2)
-      doc.moveTo(doc.x, doc.y).lineTo(doc.x + 180, doc.y).stroke();
-      doc.font('Helvetica').fontSize(8.5).text('Assinatura do responsável pela empresa');
-
-      doc.end();
+    stream.on('data', (chunk) => chunks.push(chunk));
+    stream.on('end', () => {
+      const buffer = Buffer.concat(chunks);
+      resolve(buffer.toString('base64'));
     });
-  }
+    stream.on('error', reject);
+    doc.pipe(stream);
+
+    const CONTENT_WIDTH = doc.page.width - doc.page.margins.left - doc.page.margins.right;
+
+    const addParagraph = (text: string, spacing = 0.3) => {
+      doc.moveDown(spacing).fontSize(10).font('Helvetica').text(text, { align: 'left' });
+    };
+
+    const addBoldParagraph = (text: string, spacing = 0.3) => {
+      doc.moveDown(spacing).fontSize(10).font('Helvetica-Bold').text(text, { align: 'left' });
+    };
+
+    const addIndentedParagraph = (text: string) => {
+      doc.moveDown(0.4);
+      doc.fontSize(10).font('Helvetica').text('     ' + text, { align: 'left' });
+    };
+
+    const addSectionTitle = (text: string, spacing = 0.7) => {
+      doc.moveDown(spacing).fontSize(10).font('Helvetica-Bold').text(text, { align: 'left' });
+    };
+
+    // Topo
+    addBoldParagraph(`Ao BANCO ${data.bank?.name ?? '[NOME DO BANCO]'}`, 0);
+    addBoldParagraph(`A/C ${data.bank?.bankContactManager?.name ?? '[NOME DO GERENTE DA CONTA]'}`);
+    addBoldParagraph(`Assunto: Intercâmbio de Arquivos – ${data.client?.legalName ?? '[NOME DA EMPRESA]'}`);
+
+    // Parágrafos
+    addIndentedParagraph('Comunicamos que nossa empresa passou a operar os relacionamentos de EDI, transferência eletrônica de arquivos, através da VAN FINNET.');
+    addParagraph('Solicitamos que esta Instituição disponibilize o suporte necessário para viabilizar esta implantação, onde as ações necessárias para esta migração serão conduzidas juntamente com a FINNET.');
+
+    // Contratante
+    addSectionTitle('Contratante');
+    addBoldParagraph(`Razão Social: ${data.client?.legalName ?? '[NOME DA EMPRESA]'}`);
+    addBoldParagraph(`CNPJ: ${data.client?.cnpj ?? '[CNPJ DA EMPRESA]'}`);
+    addBoldParagraph(`Agência / Conta Corrente: ${data.client?.branchNumber} | ${data.client?.accountNumber}`);
+    addBoldParagraph(`Convênio: ${data.client?.agreement ?? '[CONVÊNIO DA EMPRESA]'}`);
+
+    // VAN
+    addSectionTitle('Van Contratada');
+    addBoldParagraph('Razão Social: FINNET S/A Tecnologia');
+    addBoldParagraph('CNPJ: 05.607.266/0001-10');
+
+    // Produtos
+    addSectionTitle('Produtos Financeiros');
+    const produtos = data.bank?.products; 
+
+    produtos.forEach((p: any) => {
+      const mark = p.selected ? 'X' : ' ';
+      addParagraph(`(${mark}) ${p.name?.charAt(0).toUpperCase() + p.name?.slice(1).toLowerCase()}`, 0.15);
+    });
+
+    // Ambiente
+    addSectionTitle('Ambiente');
+    addParagraph('(X) Arquivo em produção');
+
+    // CNAB
+    addSectionTitle('Cnab');
+    const cnabs = data.bank?.cnabs ?? [{ name: '240', selected: false }, { name: '400', selected: false }];
+    cnabs.forEach((c: any) => {
+      const mark = c.selected ? 'X' : ' ';
+      addParagraph(`(${mark}) ${c.name}`, 0.15);
+    });
+
+    // Custos
+    addParagraph(
+      'Os custos serão assumidos 100% pela Empresa (alterar para 100% Banco se assim for negociado entre Empresa e Banco).',
+      0.6
+    );
+
+    // Contato da Empresa
+    addParagraph('Qualquer dúvida contatar:', 0.6);
+    addSectionTitle('Contato da Empresa', 0.5);
+    const contato = data.client?.companyContact ?? {};
+    addBoldParagraph(`Nome: ${contato.name ?? '[NOME DO RESPONSÁVEL DA EMPRESA]'}`);
+    addBoldParagraph(`E-mail: ${contato.email ?? '[EMAIL]'}`);
+    addBoldParagraph(`Telefone: ${contato.fone ?? '[TELEFONE]'}`);
+
+    // Contato VAN
+    addSectionTitle('Contato da VAN FINNET');
+    addBoldParagraph('Nome: Bianca e João');
+    addBoldParagraph('E-mail: pis.posvenda@finnet.com.br');
+    addBoldParagraph('Telefone: (11) 94457-8493 (11) 99189-2213');
+
+    // Técnico
+    addSectionTitle('Contato do responsável técnico');
+    addBoldParagraph(`Nome: ${data.technical?.name ?? '[RESPONSÁVEL TECNOSPEED]'}`);
+    addBoldParagraph(`E-mail: ${data.technical?.email ?? '[EMAIL TECNOSPEED]'}`);
+
+    // Gerente
+    addSectionTitle('Contato do gerente de conta');
+    const gerente = data.bank?.bankContactManager ?? {};
+    addBoldParagraph(`Nome: ${gerente.name ?? '[GERENTE]'}`);
+    addBoldParagraph(`E-mail: ${gerente.email ?? '[EMAIL]'}`);
+    addBoldParagraph(`Telefone: ${gerente.fone ?? '[TELEFONE]'}`);
+
+    // Finalização
+    doc.moveDown(1);
+    doc.font('Helvetica-Bold').text(
+      'Colocamo-nos à disposição para quaisquer esclarecimentos adicionais.',
+      { align: 'center' }
+    );
+
+    doc.moveDown(1);
+    doc.font('Helvetica-Bold').text('Atenciosamente,', { align: 'right' });
+
+    // Linha de assinatura
+    doc.moveDown(2);
+    const x = doc.x;
+    doc.moveTo(x, doc.y).lineTo(x + 200, doc.y).stroke();
+    doc.moveDown(0.3);
+    doc.fontSize(9).font('Helvetica').text('Assinatura do Responsável pela empresa', {
+      align: 'start'
+    });
+
+    doc.end();
+  });
+}
 }
