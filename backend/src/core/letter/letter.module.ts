@@ -18,6 +18,7 @@ import { ZapierService } from "./infra/zapier/zapier";
 import { LetterFactory } from "./application/factory/build/letter";
 import { SearchCardHistoryController } from "./infra/http/query/fetch-history/controller";
 import { SearchCardHistoryUsecase } from "./application/usecase/query/search-card-history/usecase";
+import { MailerServices } from "./infra/mailer/services";
 
 
 @Module({
@@ -32,6 +33,7 @@ import { SearchCardHistoryUsecase } from "./application/usecase/query/search-car
         StrategyTemplateBuild,
         LetterFactory,
         SearchCardHistoryUsecase,
+        MailerServices,
         {
             provide: BankRepository,
             useClass: BankRepositoryImpl,

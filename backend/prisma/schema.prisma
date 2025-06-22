@@ -62,10 +62,22 @@ model Letter {
   clientId  String          @map("client_id")
   letter    String
 
-  client Client  @relation(fields: [clientId], references: [id])
-  ticket String?
+  client     Client       @relation(fields: [clientId], references: [id])
+  ticket     String?
+  LetterLogs LetterLogs[]
 
   @@map("letter")
+}
+
+model LetterLogs {
+  letterId  String @id @map("letter_id")
+  attempt   String
+  requestId String @map("request_id")
+  status    String
+
+  letter Letter @relation(fields: [letterId], references: [id])
+
+  @@map("letter_logs")
 }
 
 enum Cnabs {

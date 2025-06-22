@@ -19,7 +19,7 @@ export class LetterProducerQueue {
         });
     }
 
-    async publish(letter: string[], client: {
+    async publish(letter: string, letterId: string, client: {
         cnpj: string,
         email: string,
         product: string
@@ -29,11 +29,11 @@ export class LetterProducerQueue {
             'LETTER_TO_ZAPIER',
             {
                 jobId: generateId(),
-                letter: JSON.stringify(letter),
+                letter: letter,
                 eventDate: new Date(),
-                client: client
+                client: client,
+                letterId: letterId
             }
         );
-        this.logger.log('finisheh sending');
     }
 }

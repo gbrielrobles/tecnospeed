@@ -18,26 +18,26 @@ export class SendingLetterUsecase {
     ) {}
 
     async execute(hashed: string): Promise<any> {
-        const result = await this.cache.get(hashed);
+        const cache = await this.cache.get(hashed);
 
-        if(!result) {
+        if(!cache) {
             throw new ContractNotFoundException()
         }
 
-        const data = FormLetter.create(JSON.parse(result));
-          
+        const data = FormLetter.create(JSON.parse(cache));
+        
         const productsToSending = data.bank.products.filter((prod) => prod.selected == true);
 
         productsToSending.forEach(async prod => {
             const html = await this.strategy.getHtml(data.bank.id, {
-                  ...data,
-                  bank: {
+                ...data,
+                bank: {
                     ...data.bank,
                     products: [prod],
                 }
-            }, data.carrier)
-            
-            await this.letterRepository.push({
+            }, data.carrier);
+
+            const result : string = await this.letterRepository.push({
                 bankId: data.bank.id,
                 carrier: data.carrier,
                 createdAt: new Date(),
@@ -45,9 +45,11 @@ export class SendingLetterUsecase {
                 status: SendingLetterStatus.PENDING,
                 id: generateId(),
                 ticket: null,
-                letter: result,
+                letter: cache,
                 clientId: "cmbk78ynb000007lbabwkfokt",
             });
+
+            const letterId = result;
 
             const pdf = await this.strategy.getPdf({
                 ...data, 
@@ -56,13 +58,15 @@ export class SendingLetterUsecase {
                     products: [prod],
                 }
             }, data.carrier)
+
+            await this.queue.publish(pdf, letterId, {
+                cnpj: data.client.cnpj,
+                email: data.client.companyContact.email,
+                product: prod.description
+            });
         });
         
       
-        // await this.queue.publish(contractToSending, {
-        //     cnpj: data.client.cnpj,
-        //     email: data.client.companyContact.email,
-        //     product: data.bank.products
-        // });
+       
     }
 }

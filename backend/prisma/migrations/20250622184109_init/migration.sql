@@ -59,9 +59,20 @@ CREATE TABLE "letter" (
     "status" "StatusOfSending" NOT NULL,
     "carrier" "Carrier" NOT NULL,
     "client_id" TEXT NOT NULL,
+    "letter" TEXT NOT NULL,
     "ticket" TEXT,
 
     CONSTRAINT "letter_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "letter_logs" (
+    "letter_id" TEXT NOT NULL,
+    "attempt" TEXT NOT NULL,
+    "request_id" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+
+    CONSTRAINT "letter_logs_pkey" PRIMARY KEY ("letter_id")
 );
 
 -- CreateIndex
@@ -75,3 +86,6 @@ ALTER TABLE "product_bank" ADD CONSTRAINT "product_bank_product_id_fkey" FOREIGN
 
 -- AddForeignKey
 ALTER TABLE "letter" ADD CONSTRAINT "letter_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "client"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "letter_logs" ADD CONSTRAINT "letter_logs_letter_id_fkey" FOREIGN KEY ("letter_id") REFERENCES "letter"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
