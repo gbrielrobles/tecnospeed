@@ -7,7 +7,6 @@ import { ZapierService } from "../zapier/zapier";
 import { LetterRepository } from "core/letter/domain/port/repositories/prisma/letter.repository";
 import { SendingLetterStatus } from "core/letter/domain/enum/status-letter";
 import { ZapierMappedResult } from "../zapier/mapper/zapier";
-import { MailerModule } from "@nestjs-modules/mailer";
 import { MailerServices } from "../mailer/services";
 
 @Injectable()
