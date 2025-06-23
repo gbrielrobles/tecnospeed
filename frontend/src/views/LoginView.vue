@@ -50,7 +50,7 @@ export default {
     const token = ref('');
 
     const handleLogin = () => {
-      router.push('/home');
+      router.push('/historico');
     };
 
     return {

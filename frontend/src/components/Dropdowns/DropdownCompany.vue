@@ -37,6 +37,8 @@
         :bankId="bankId"
         :bank-name="bank"
         @update="updateBankData"
+        @preview-closed="handlePreviewClosed"
+        @close="handlePreviewClosed"
         :productsIds="initialProductIds"
       />
       
@@ -50,6 +52,8 @@
         :bankId="bankId"
         :bank-name="bank"
         @update="updateBankData"
+        @preview-closed="handlePreviewClosed"
+        @close="handlePreviewClosed"
         :productsIds="initialProductIds"
       />
 
@@ -59,7 +63,6 @@
         </button>
         <button 
           class="next-button"
-          :disabled="!isFormValid"
           @click="handleNext"
         >
           Próximo
@@ -138,18 +141,16 @@ export default defineComponent({
     isFormValid: function() {
       if (!this.selectedCnabType) return false;
 
-      const commonFieldsValid = Object.values(this.commonData).every(field => !!field);
-
       if (this.selectedCnabType === 'CNAB240') {
         /** @type {any} */
         const form = this.$refs.cnab240Form;
-        return commonFieldsValid && form && form.validateFields();
+        return form && form.validateFields();
       }
 
       if (this.selectedCnabType === 'CNAB400') {
         /** @type {any} */
         const form = this.$refs.cnab400Form;
-        return commonFieldsValid && form && form.validateFields();
+        return form && form.validateFields();
       }
 
       return false;
@@ -166,6 +167,21 @@ export default defineComponent({
       this.bankData = {};
     },
     handleNext: function() {
+      if (this.selectedCnabType === 'CNAB240') {
+        /** @type {any} */
+        const form = this.$refs.cnab240Form;
+        if (form) {
+          form.handleSubmit();
+        }
+      } else if (this.selectedCnabType === 'CNAB400') {
+        /** @type {any} */
+        const form = this.$refs.cnab400Form;
+        if (form) {
+          form.handleSubmit();
+        }
+      }
+    },
+    handlePreviewClosed: function() {
       var allData = Object.assign(
         {},
         this.commonData,
@@ -182,3 +198,49 @@ export default defineComponent({
   }
 });
 </script>
+
+<style scoped>
+.navigation-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.secondary-button {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  color: #666;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.secondary-button:hover {
+  background: #f8f9fa;
+  border-color: #ccc;
+}
+
+.next-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  background: #4a90e2;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.next-button:hover:not(:disabled) {
+  background: #357abd;
+}
+
+.next-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+</style>

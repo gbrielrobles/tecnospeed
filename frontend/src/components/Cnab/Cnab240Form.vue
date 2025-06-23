@@ -1,192 +1,229 @@
 <template>
   <form @submit.prevent="handleSubmit" class="form-grid">
+    <!-- Seção 0: Seleção de Método de Envio -->
+    <div class="form-section">
+      <h3 class="section-title">Seleção de Método de Envio</h3>
+      <div class="form-group">
+        <label for="transportadora">Transportadora</label>
+        <select
+          id="transportadora"
+          v-model="form.transportadora"
+          class="form-input"
+          required
+        >
+          <option value="">Selecione um metodo de envio</option>
+          <option value="finnet">Finnet</option>
+          <option value="nexxera">Nexxera</option>
+        </select>
+      </div>
+    </div>
+
     <!-- Seção 1: Dados da Empresa -->
     <div class="form-section">
-      <h3 class="section-title">Dados da Empresa</h3>           
-
-      <div class="form-group">
-        <label for="cnpj">CNPJ</label>
-        <input
-          type="text"
-          id="cnpj"
-          v-model="form.cnpj"
-          class="form-input"
-          required
-          placeholder="00.000.000/0000-00"
-          v-mask="'cnpj'"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="legalName">Nome Legal</label>
-        <input
-          type="text"
-          id="legalName"
-          v-model="form.legalName"
-          class="form-input"
-          required
-          placeholder="Razão social"
-        />
+      <h3 class="section-title">Dados da Empresa</h3>
+      <div class="form-row">
+        <div class="form-group col-cnpj">
+          <label for="cnpj">CNPJ</label>
+          <input
+            type="text"
+            id="cnpj"
+            v-model="form.cnpj"
+            class="form-input"
+            required
+            placeholder="00.000.000/0000-00"
+            v-mask="'cnpj'"
+          />
+        </div>
+        <div class="form-group col-name">
+          <label for="legalName">Nome Legal</label>
+          <input
+            type="text"
+            id="legalName"
+            v-model="form.legalName"
+            class="form-input"
+            required
+            placeholder="Razão social"
+          />
+        </div>
       </div>
     </div>
 
     <!-- Seção 2: Dados Bancários -->
     <div class="form-section">
       <h3 class="section-title">Dados Bancários</h3>
-      
-      <div class="form-group">
-        <label for="bank">Banco</label>
-        <input
-          type="text"
-          id="bank"
-          :value="bankDisplay"
-          class="form-input"
-          required
-          disabled
-        />
-        <input type="hidden" v-model="form.bankId">
-      </div>
-
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group col-bank">
+          <label for="bank">Banco</label>
+          <input
+            type="text"
+            id="bank"
+            :value="bankDisplay"
+            class="form-input"
+            required
+            disabled
+          />
+          <input type="hidden" v-model="form.bankId">
+        </div>
+        <div class="form-group col-agency">
           <label for="branchNumber">Agência</label>
           <input
-            type="number"
+            type="text"
             id="branchNumber"
-            v-model.number ="form.branchNumber"
+            v-model="form.branchNumber"
             class="form-input"
             required
             placeholder="Número da agência"
+            v-mask="'agency'"
           />
         </div>
-
-        <div class="form-group">
+        <div class="form-group col-account">
           <label for="accountNumber">Conta</label>
           <input
-            type="number"
+            type="text"
             id="accountNumber"
-            v-model.number="form.accountNumber"
+            v-model="form.accountNumber"
             class="form-input"
             required
             placeholder="Número da conta"
+            v-mask="'account'"
           />
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="ufBank">UF do Banco</label>
-        <input
-          type="text"
-          id="ufBank"
-          v-model="form.ufBank"
-          class="form-input"
-          required
-          placeholder="Estado"
-          maxlength="2"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="bankCity">Cidade do Banco</label>
-        <input
-          type="text"
-          id="bankCity"
-          v-model="form.bankCity"
-          class="form-input"
-          required
-          placeholder="Cidade"
-        />
+      <div class="form-row">
+        <div class="form-group col-uf">
+          <label for="ufBank">UF do Banco</label>
+          <input
+            type="text"
+            id="ufBank"
+            v-model="form.ufBank"
+            class="form-input"
+            required
+            placeholder="Estado"
+            maxlength="2"
+          />
+        </div>
+        <div class="form-group col-city">
+          <label for="bankCity">Cidade do Banco</label>
+          <input
+            type="text"
+            id="bankCity"
+            v-model="form.bankCity"
+            class="form-input"
+            required
+            placeholder="Cidade"
+          />
+        </div>
       </div>
     </div>
 
-    <!-- Seção 3: Contatos -->
+    <!-- Seção 3: Contato da Empresa -->
     <div class="form-section">
       <h3 class="section-title">Contato da Empresa</h3>
-      
-      <div class="form-group">
-        <label for="companyContact.name">Nome</label>
-        <input
-          type="text"
-          id="companyContact.name"
-          v-model="form.companyContact.name"
-          class="form-input"
-          required
-          placeholder="Nome do contato"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="companyContact.email">Email</label>
-        <input
-          type="email"
-          id="companyContact.email"
-          v-model="form.companyContact.email"
-          class="form-input"
-          required
-          placeholder="Email do contato"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="companyContact.fone">Telefone</label>
-        <input
-          type="text"
-          id="companyContact.fone"
-          v-model="form.companyContact.fone"
-          class="form-input"
-          required
-          placeholder="Telefone do contato"
-          v-mask="'phone'"
-        />
+      <div class="form-row">
+        <div class="form-group col-name">
+          <label for="companyContact.name">Nome</label>
+          <input
+            type="text"
+            id="companyContact.name"
+            v-model="form.companyContact.name"
+            class="form-input"
+            required
+            placeholder="Nome do contato"
+          />
+        </div>
+        <div class="form-group col-email">
+          <label for="companyContact.email">Email</label>
+          <input
+            type="email"
+            id="companyContact.email"
+            v-model="form.companyContact.email"
+            class="form-input"
+            required
+            placeholder="Email do contato"
+          />
+        </div>
+        <div class="form-group col-phone">
+          <label for="companyContact.fone">Telefone</label>
+          <input
+            type="text"
+            id="companyContact.fone"
+            v-model="form.companyContact.fone"
+            class="form-input"
+            required
+            placeholder="Telefone do contato"
+            v-mask="'phone'"
+          />
+        </div>
+        <div class="form-group col-position">
+          <label for="companyContact.positionCompany">Cargo</label>
+          <input
+            type="text"
+            id="companyContact.positionCompany"
+            v-model="form.companyContact.positionCompany"
+            class="form-input"
+            required
+            placeholder="Cargo do contato"
+          />
+        </div>
       </div>
     </div>
 
     <!-- Seção 4: Contato do Gerente Bancário -->
     <div class="form-section">
       <h3 class="section-title">Contato do Gerente Bancário</h3>
-      
-      <div class="form-group">
-        <label for="bankManagerContact.name">Nome</label>
-        <input
-          type="text"
-          id="bankManagerContact.name"
-          v-model="form.bankManagerContact.name"
-          class="form-input"
-          required
-          placeholder="Nome do gerente"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="bankManagerContact.email">Email</label>
-        <input
-          type="email"
-          id="bankManagerContact.email"
-          v-model="form.bankManagerContact.email"
-          class="form-input"
-          required
-          placeholder="Email do gerente"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="bankManagerContact.fone">Telefone</label>
-        <input
-          type="text"
-          id="bankManagerContact.fone"
-          v-model="form.bankManagerContact.fone"
-          class="form-input"
-          required
-          placeholder="Telefone do gerente"
-          v-mask="'phone'"
-        />
+      <div class="form-row">
+        <div class="form-group col-name">
+          <label for="bankManagerContact.name">Nome</label>
+          <input
+            type="text"
+            id="bankManagerContact.name"
+            v-model="form.bankManagerContact.name"
+            class="form-input"
+            required
+            placeholder="Nome do gerente"
+          />
+        </div>
+        <div class="form-group col-email">
+          <label for="bankManagerContact.email">Email</label>
+          <input
+            type="email"
+            id="bankManagerContact.email"
+            v-model="form.bankManagerContact.email"
+            class="form-input"
+            required
+            placeholder="Email do gerente"
+          />
+        </div>
+        <div class="form-group col-phone">
+          <label for="bankManagerContact.fone">Telefone</label>
+          <input
+            type="text"
+            id="bankManagerContact.fone"
+            v-model="form.bankManagerContact.fone"
+            class="form-input"
+            required
+            placeholder="Telefone do gerente"
+            v-mask="'phone'"
+          />
+        </div>
+        <div class="form-group col-position">
+          <label for="bankManagerContact.positionCompany">Cargo</label>
+          <input
+            type="text"
+            id="bankManagerContact.positionCompany"
+            v-model="form.bankManagerContact.positionCompany"
+            class="form-input"
+            required
+            placeholder="Cargo do gerente"
+          />
+        </div>
       </div>
     </div>
 
     <!-- Seção 5: Outras Informações -->
     <div class="form-section">
       <h3 class="section-title">Outras Informações</h3>
-      
       <div class="form-group">
         <label for="agreement">Acordo</label>
         <input
@@ -198,57 +235,17 @@
           placeholder="Termo de acordo"
         />
       </div>
-
-      <div class="form-group">
-        <label>Preferência de Contato</label>
-        <div class="checkbox-group">
-          <label><input type="checkbox" value="W" v-model="form.preferenceByContact"> WhatsApp</label>
-          <label><input type="checkbox" value="E" v-model="form.preferenceByContact"> Email</label>
-          <label><input type="checkbox" value="P" v-model="form.preferenceByContact"> Telefone</label>
-        </div>
-      </div>
-    </div>
-
-    <!-- Botão de pré-visualização -->
-    <div class="form-actions">
-      <button type="button" @click="handlePreview" class="btn btn-preview">
-        Pré-visualizar
-      </button>
     </div>
 
     <!-- Modal de pré-visualização -->
     <div v-if="showPreviewModal" class="modal-overlay">
       <div class="modal-content">
-        <h3>Visualização dos Documentos</h3>
-
         <div v-if="loading" class="loading-section">
           Carregando documentos...
         </div>
 
         <div v-else>
-          <!-- Navegação entre documentos -->
-          <div class="document-navigation">
-            <button 
-              @click="currentDocument = 'finnet'" 
-              :class="{ 'active': currentDocument === 'finnet' }"
-              class="nav-btn"
-            >
-              Finnet
-            </button>
-            <button 
-              @click="currentDocument = 'nexxera'" 
-              :class="{ 'active': currentDocument === 'nexxera' }"
-              class="nav-btn"
-            >
-              Nexxera
-            </button>
-          </div>
-
-          <!-- Visualização do documento atual -->
           <div class="document-viewer">
-            <h4 v-if="currentDocument === 'finnet'">Documento Finnet</h4>
-            <h4 v-else>Documento Nexxera</h4>
-            
             <div class="document-container">
               <iframe 
                 :srcdoc="currentDocument === 'finnet' ? finalHtmls.finnet : finalHtmls.nexxera" 
@@ -260,8 +257,8 @@
           </div>
 
           <div class="modal-actions">
-            <button class="btn btn-confirm" @click="finalize()">Confirmar</button>
-            <button class="btn btn-cancel" @click="showPreviewModal = false">Fechar</button>
+            <button class="btn btn-confirm" @click="submitForm">Enviar</button>
+            <button class="btn btn-cancel" @click="showPreviewModal = false">Voltar</button>
           </div>
         </div>
       </div>
@@ -295,15 +292,16 @@ export default {
       },
       documentHash: '',
       form: {
+        transportadora: '',
         bankId: this.bankId || '',
         legalName: '',
         cnpj: '',
-        accountNumber: 0,
-        branchNumber: 0,
+        accountNumber: '',
+        branchNumber: '',
         selectedProducts: Array.isArray(this.products) ? this.products : this.products.split(',').map(p => p.trim()),
         selectedCnabs: this.formType ? [this.formType] : [],
-        companyContact: { name: '', email: '', fone: '' },
-        bankManagerContact: { name: '', email: '', fone: '' },
+        companyContact: { name: '', email: '', fone: '', positionCompany: '' },
+        bankManagerContact: { name: '', email: '', fone: '', positionCompany: '' },
         agreement: '',
         ufBank: '',
         bankCity: '',
@@ -315,6 +313,9 @@ export default {
     preferenceLabel() {
       const map = { W: 'WhatsApp', E: 'Email', T: 'Telefone' };
       return this.form.preferenceByContact.map(p => map[p]).join(', ');
+    },
+    isFormValid() {
+      return this.validateFields();
     }
   },
   created() {
@@ -368,68 +369,226 @@ export default {
         alert('Erro ao buscar dados do CNPJ. Verifique se o número está correto.');
       }
     },
-    handleSubmit() {
-      console.log('Formulário enviado');
-    },
-    async handlePreview() {
-      if (!this.validateFields()) return;
-
-      this.loading = true;
+    async handleSubmit() {
+      // Primeiro abre o modal de pré-visualização
       this.showPreviewModal = true;
-      this.currentDocument = 'finnet'; 
-
+      this.loading = true;
+      
       try {
-        const response = await fetch('http://localhost:8000/letter', {
+        // Busca o HTML do backend para pré-visualização
+        const endpoint = this.form.transportadora === 'finnet' 
+          ? 'http://localhost:8000/letter/finnet'
+          : 'http://localhost:8000/letter/nexxera';
+        
+        const response = await fetch(endpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify(this.form)
         });
-
-        if (!response.ok) throw new Error('Erro ao enviar para /api/letter');
+        
+        if (!response.ok) {
+          throw new Error('Erro ao carregar pré-visualização');
+        }
+        
         const data = await response.json();
-
-        this.finalHtmls.finnet = data.data.finnet || '';
-        this.finalHtmls.nexxera = data.data.nexxera || '';
-        this.documentHash = data.hashed || '';
-      } catch (error) {
-        console.error('Erro no envio para /api/letter:', error);
-        alert('Erro ao gerar os documentos. Tente novamente.');
-        this.showPreviewModal = false;
-      } finally {
+        
+        // Armazena o HTML retornado
+        if (this.form.transportadora === 'finnet') {
+          this.finalHtmls.finnet = data.template;
+        } else {
+          this.finalHtmls.nexxera = data.template;
+        }
+        
+        this.documentHash = data.hashed;
         this.loading = false;
+      } catch (error) {
+        console.error('Erro ao carregar pré-visualização:', error);
+        this.loading = false;
+        this.showPreviewModal = false;
+        alert('Erro ao carregar pré-visualização. Verifique os dados do formulário.');
+      }
+    },
+    async submitForm() {
+      try {
+        // Usa o endpoint de envio com o hash gerado
+        const response = await fetch('http://localhost:8000/send-letter', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            hashed: this.documentHash
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Erro ao enviar formulário');
+        }
+        
+        const data = await response.json();
+        this.finalize();
+        // Handle success
+      } catch (error) {
+        console.error('Erro:', error);
+        // Handle error
       }
     },
     validateFields() {
       const requiredFields = [
         'bankId', 'legalName', 'cnpj', 'accountNumber', 'branchNumber',
-        'ufBank', 'bankCity', 'agreement'
+        'ufBank', 'bankCity', 'agreement', 'transportadora'
       ];
 
       const requiredContactFields = [
-        'companyContact.name', 'companyContact.email', 'companyContact.fone',
-        'bankManagerContact.name', 'bankManagerContact.email', 'bankManagerContact.fone'
+        'companyContact.name', 'companyContact.email', 'companyContact.fone', 'companyContact.positionCompany',
+        'bankManagerContact.name', 'bankManagerContact.email', 'bankManagerContact.fone', 'bankManagerContact.positionCompany'
       ];
 
       const isValid = requiredFields.every(field => !!this.form[field]) &&
         requiredContactFields.every(field => {
           const [parent, child] = field.split('.');
           return !!this.form[parent]?.[child];
-        }) &&
-        this.form.preferenceByContact.length > 0;
+        });
 
-      return true;
+      return isValid;
     },
     finalize() {
       this.showPreviewModal = false;
       this.$emit('update', { ...this.form, hash: this.documentHash });
+      this.$emit('close');
+      // Redireciona para o histórico após envio bem-sucedido
+      this.$router.push('/historico');
     }
   }
 }
 </script>
 
 
-
 <style scoped>
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.form-section {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.section-title {
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-row {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Column widths */
+.col-cnpj { grid-column: span 1; }
+.col-name { grid-column: span 2; }
+.col-bank { grid-column: span 2; }
+.col-agency { grid-column: span 1; }
+.col-account { grid-column: span 1; }
+.col-uf { grid-column: span 1; }
+.col-city { grid-column: span 2; }
+.col-email { grid-column: span 2; }
+.col-phone { grid-column: span 1; }
+.col-position { grid-column: span 1; }
+
+.form-row {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+select.form-input {
+  background-color: white;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-primary {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #357abd;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .col-cnpj,
+  .col-name,
+  .col-bank,
+  .col-agency,
+  .col-account,
+  .col-uf,
+  .col-city,
+  .col-email,
+  .col-phone,
+  .col-position {
+    grid-column: span 1;
+  }
+}
+
 .document-navigation {
   display: flex;
   gap: 0.5rem;
@@ -468,8 +627,8 @@ export default {
 }
 
 .document-container {
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 8px;
+  height: 550px;
   overflow: hidden;
 }
 
@@ -487,39 +646,29 @@ export default {
   background: rgba(0, 0, 0, 0.5);
   display: flex; align-items: center; justify-content: center;
   z-index: 1000;
+  overflow: hidden;
+  border: none;
 }
+
 .modal-content {
   background: #fff;
   padding: 2rem;
   border-radius: 12px;
-  max-width: 800px;
-  width: 90%;
-  max-height: 90vh;
+  max-width: 1000px;
+  width: 100%;
+  height: auto;
+  max-height: none;
   overflow-y: auto;
 }
-.modal-section {
-  margin-bottom: 1.5rem;
-}
+
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  gap: 0.5rem;
 }
 .loading-section {
   text-align: center;
   padding: 2rem;
-}
-.btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-}
-.btn-preview { 
-  background: #007bff; 
-  color: white; 
 }
 .btn-confirm { 
   background: #28a745; 
@@ -528,9 +677,5 @@ export default {
 .btn-cancel { 
   background: #dc3545; 
   color: white; 
-}
-.form-actions {
-  margin-top: 2rem;
-  text-align: right;
 }
 </style>
