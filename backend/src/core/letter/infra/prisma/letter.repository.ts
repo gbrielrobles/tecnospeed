@@ -62,7 +62,6 @@ export class LetterRepositoryImpl implements LetterRepository {
                 id: id
              }
         }); 
-        console.log(result);
 
         return result.id;
     }
