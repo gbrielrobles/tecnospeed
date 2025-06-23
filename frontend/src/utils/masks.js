@@ -22,6 +22,14 @@ export const masks = {
       return digits
         .replace(/(\d{5})(\d)/, '$1-$2')
         .substring(0, 9);
+    },
+    agency: (value) => {
+      const digits = value.replace(/\D/g, '').substring(0, 4);
+      return digits;
+    },
+    account: (value) => {
+      const digits = value.replace(/\D/g, '').substring(0, 12);
+      return digits;
     }
   };
   
