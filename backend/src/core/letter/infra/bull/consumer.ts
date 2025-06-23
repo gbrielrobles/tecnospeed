@@ -42,7 +42,7 @@ export class LetterConsumer implements OnModuleInit {
             });
 
             await this.mailer.send(
-                'viniciusfiel1000@gmail.com',
+                data.client.email,
                 'Atendimento Iniciado',
                 'Seu ticket foi aberto e já está sendo avaliado! Obrigado pela preferência.',
                 data.letter
