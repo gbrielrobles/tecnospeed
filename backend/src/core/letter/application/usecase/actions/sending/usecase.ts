@@ -27,7 +27,7 @@ export class SendingLetterUsecase {
         const data = FormLetter.create(JSON.parse(cache));
 
         const productsToSending = data.bank.products.filter((prod) => prod.selected == true);
-        console.log(productsToSending);
+
         productsToSending.forEach(async prod => {
             const html = await this.strategy.getHtml(data.bank.id, {
                 ...data,
@@ -37,6 +37,15 @@ export class SendingLetterUsecase {
                 }
             }, data.carrier);
 
+            const pdf = await this.strategy.getPdf({
+                ...data, 
+                bank: {
+                    ...data.bank,
+                    products: [prod],
+                }
+            }, data.carrier)
+
+
             const result : string = await this.letterRepository.push({
                 bankId: data.bank.id,
                 carrier: data.carrier,
@@ -45,19 +54,11 @@ export class SendingLetterUsecase {
                 status: SendingLetterStatus.PENDING,
                 id: generateId(),
                 ticket: null,
-                letter: cache,
+                letter: pdf,
                 clientId: "cmbk78ynb000007lbabwkfokt",
             });
 
             const letterId = result;
-
-            const pdf = await this.strategy.getPdf({
-                ...data, 
-                bank: {
-                    ...data.bank,
-                    products: [prod],
-                }
-            }, data.carrier)
 
             await this.queue.publish(pdf, letterId, {
                 cnpj: data.client.cnpj,
