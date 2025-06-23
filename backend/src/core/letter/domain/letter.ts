@@ -47,6 +47,10 @@ export class Letter {
 
     @Expose()
     @IsString()
+    base64letter: String;
+
+    @Expose()
+    @IsString()
     ticket: string | null;
 
     @Expose()

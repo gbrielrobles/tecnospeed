@@ -54,7 +54,8 @@ export class SendingLetterUsecase {
                 status: SendingLetterStatus.PENDING,
                 id: generateId(),
                 ticket: null,
-                letter: pdf,
+                letter: cache,
+                base64letter: pdf, 
                 clientId: "cmbk78ynb000007lbabwkfokt",
             });
 

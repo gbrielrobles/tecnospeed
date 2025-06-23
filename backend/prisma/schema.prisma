@@ -54,13 +54,14 @@ model Client {
 }
 
 model Letter {
-  id        String          @id @default(cuid())
-  createdAt DateTime        @default(now()) @map("created_at")
-  updatedAt DateTime        @updatedAt @map("updated_at")
-  status    StatusOfSending
-  carrier   Carrier
-  clientId  String          @map("client_id")
-  letter    String
+  id           String          @id @default(cuid())
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+  status       StatusOfSending
+  carrier      Carrier
+  clientId     String          @map("client_id")
+  letter       String
+  base64letter String?         @map("base_64_letter")
 
   client     Client       @relation(fields: [clientId], references: [id])
   ticket     String?

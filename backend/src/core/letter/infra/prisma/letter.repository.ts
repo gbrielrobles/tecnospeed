@@ -52,6 +52,7 @@ export class LetterRepositoryImpl implements LetterRepository {
                 clientId: rest.clientId,
                 createdAt: rest.createdAt,
                 updatedAt: rest.updatedAt,
+                base64letter: rest.base64letter as string,
                 id: id
             },
             update: {
@@ -60,7 +61,8 @@ export class LetterRepositoryImpl implements LetterRepository {
              where : {
                 id: id
              }
-        });
+        }); 
+        console.log(result);
 
         return result.id;
     }
