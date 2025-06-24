@@ -29,14 +29,6 @@ export class SendingLetterUsecase {
         const productsToSending = data.bank.products.filter((prod) => prod.selected == true);
 
         productsToSending.forEach(async prod => {
-            const html = await this.strategy.getHtml(data.bank.id, {
-                ...data,
-                bank: {
-                    ...data.bank,
-                    products: [prod],
-                }
-            }, data.carrier);
-
             const pdf = await this.strategy.getPdf({
                 ...data, 
                 bank: {
