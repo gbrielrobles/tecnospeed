@@ -54,7 +54,13 @@ export class SendingLetterUsecase {
                 status: SendingLetterStatus.PENDING,
                 id: generateId(),
                 ticket: null,
-                letter: cache,
+                letter: JSON.stringify({
+                    ...data, 
+                    bank: {
+                        ...data.bank,
+                        products: [prod],
+                    } 
+                }),
                 base64letter: pdf, 
                 clientId: "cmbk78ynb000007lbabwkfokt",
             });
