@@ -1,7 +1,9 @@
 <template>
   <header class="app-header">
     <div class="header-content">
-      <img src="@/assets/logo.png" alt="Tecnospeed" class="logo">
+      <a href="/historico">
+        <img src="@/assets/logo.png" alt="Tecnospeed" class="logo" />
+      </a>
       <a href="/" class="logout-link">Sair</a>
     </div>
   </header>

@@ -222,16 +222,16 @@
       </div>
     </div>
 
-    <!-- Seção 5: Convênio -->
+    <!-- Seção 5: Acordo -->
     <div class="form-section">
-      <h3 class="section-title">Convênio</h3>
+      <h3 class="section-title">Outras Informações</h3>
       <div class="form-row">
         <div class="form-group col-agreement">
           <ValidatedInput
             v-model="form.agreement"
-            label="Convênio"
+            label="Acordo"
             id="agreement"
-            placeholder="Número do convênio"
+            placeholder="Termo de acordo"
             validation-type="agreement"
             required
             @validation-change="handleValidationChange"
@@ -279,49 +279,29 @@
 
     <!-- Modal de pré-visualização -->
     <div v-if="showPreviewModal" class="modal-overlay">
-      <div class="modal-content">
+      <div class="modal-content large-modal">
         <div v-if="loading" class="loading-section">
           Carregando documentos...
         </div>
-
         <div v-else>
-          <!-- Navegação entre documentos -->
-          <div class="document-navigation">
-            <button 
-              @click="currentDocument = 'finnet'" 
-              :class="{ 'active': currentDocument === 'finnet' }"
-              class="nav-btn"
-            >
-              Finnet
-            </button>
-            <button 
-              @click="currentDocument = 'nexxera'" 
-              :class="{ 'active': currentDocument === 'nexxera' }"
-              class="nav-btn"
-            >
-              Nexxera
-            </button>
-          </div>
-
-          <!-- Visualização do documento atual -->
+          <!-- Visualização do documento do meio de transporte selecionado -->
           <div class="document-viewer">
-            <h4 v-if="currentDocument === 'finnet'">Documento Finnet</h4>
-            <h4 v-else>Documento Nexxera</h4>
-            
+            <h4>
+              Documento {{ form.transportadora === 'finnet' ? 'Finnet' : 'Nexxera' }}
+            </h4>
             <div class="document-container">
               <iframe 
-                :srcdoc="currentDocument === 'finnet' ? finalHtmls.finnet : finalHtmls.nexxera" 
+                :srcdoc="form.transportadora === 'finnet' ? finalHtmls.finnet : finalHtmls.nexxera" 
                 width="100%" 
-                height="350px" 
+                height="600px" 
                 style="border:1px solid #ccc;"
               />
             </div>
           </div>
-
-          <div class="modal-actions">
-            <button class="btn btn-confirm" @click="submitForm">Enviar</button>
-            <button class="btn btn-cancel" @click="showPreviewModal = false">Voltar</button>
-          </div>
+        </div>
+        <div class="modal-actions fixed-bottom">
+          <button class="btn btn-confirm" @click="submitForm">Enviar</button>
+          <button class="btn btn-cancel" @click="showPreviewModal = false">Voltar</button>
         </div>
       </div>
     </div>
@@ -513,7 +493,12 @@ export default {
       }
     },
     async submitForm() {
+      console.log('Iniciando envio da carta...');
+      let redirect = false;
       try {
+        console.log('Enviando para:', 'http://localhost:8000/send-letter');
+        console.log('Hash:', this.documentHash);
+        
         // Usa o endpoint de envio com o hash gerado
         const response = await fetch('http://localhost:8000/send-letter', {
           method: 'POST',
@@ -525,17 +510,40 @@ export default {
           })
         });
         
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
         if (!response.ok) {
-          throw new Error('Erro ao enviar formulário');
+          const errorText = await response.text();
+          console.error('Erro na resposta:', errorText);
+          throw new Error(`Erro HTTP ${response.status}: ${errorText}`);
         }
         
-        const data = await response.json();
+        // Alteração: tratar resposta vazia
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : {};
+        console.log('Resposta do servidor:', data);
         
-        this.finalize();
-        // Handle success
+        // Fecha o modal imediatamente
+        this.showPreviewModal = false;
+        console.log('Modal fechado');
+        
+        // Força o redirecionamento para o histórico
+        console.log('Redirecionando para /historico...');
+        this.$router.push('/historico');
+        redirect = true;
+        console.log('Redirecionamento executado');
+        
       } catch (error) {
-        console.error('Erro:', error);
-        // Handle error
+        console.error('Erro detalhado:', error);
+        alert(`Erro ao enviar carta: ${error.message}`);
+      } finally {
+        // Garante o redirecionamento mesmo em caso de erro
+        if (!redirect) {
+          console.log('Forçando redirecionamento no finally...');
+          this.showPreviewModal = false;
+          this.$router.push('/historico');
+        }
       }
     },
     finalize() {
@@ -548,8 +556,6 @@ export default {
       };
       this.$emit('update', { ...formData, hash: this.documentHash });
       this.$emit('close');
-      // Redireciona para o histórico após envio bem-sucedido
-      this.$router.push('/historico');
     }
   }
 }
@@ -565,7 +571,7 @@ export default {
   margin: 0 auto;
   height: auto;
   overflow: visible;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .form-section {
@@ -773,7 +779,10 @@ label {
 }
 
 .document-container iframe {
-  max-height: 400px;
+  height: calc(100vh - 250px);
+  max-height: unset;
+  min-height: 300px;
+  width: 100%;
   border: 1px solid #ccc;
 }
 
@@ -790,17 +799,44 @@ label {
   z-index: 100;
 }
 
-.modal-section {
-  margin-bottom: 1.5rem;
+.modal-content {
+  background: white;
+  padding: 0.75rem;
+  border-radius: 6px;
+  max-width: 95vw;
+  width: 95vw;
+  max-height: 90vh;
+  height: 90vh;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.large-modal {
+  max-width: 95vw;
+  width: 95vw;
+  max-height: 90vh;
+  height: 90vh;
 }
 
 .modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  margin-top: auto;
   padding-top: 1rem;
   border-top: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  background: white;
+}
+
+.fixed-bottom {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  z-index: 102;
 }
 
 .loading-section {
