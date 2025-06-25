@@ -27,7 +27,7 @@
       <select 
         v-else
         v-model="selectedBankId" 
-        class="select"
+        class="form-input"
       >
         <option value="">Selecione um banco</option>
         <option 
@@ -87,11 +87,9 @@ export default {
         const response = await fetch('http://localhost:8000/bank', {
           method: 'get',
         }); 
-        console.log(response)
         const data = await response.json();
         this.banks = data;
       } catch (error) {
-        console.log(error);
         console.error("Erro ao carregar bancos:", error);
       } finally {
         this.loading = false;
@@ -116,21 +114,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.loading-message, .error-message {
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 4px;
-}
-
-.loading-message {
-  background-color: #f0f0f0;
-  color: #555;
-}
-
-.error-message {
-  background-color: #ffecec;
-  color: #d33;
-}
-</style>

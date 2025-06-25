@@ -13,8 +13,13 @@ export function IsValidAccountNumber(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any) {
-          if (typeof value !== 'string') return false;
-          return /^\d{5,12}$/.test(value);
+          if (value === null || value === undefined) return false;
+                   
+          const stringValue = typeof value === 'number' ? value.toString() : value;
+          if (typeof stringValue !== 'string') return false;
+          
+          const digits = stringValue.replace(/\D/g, '');
+          return /^\d{5,12}$/.test(digits);
         },
         defaultMessage(): string {
           return 'Número da conta deve conter entre 5 e 12 dígitos numéricos.';

@@ -13,7 +13,7 @@
         <h3 class="section-title">Selecione o tipo de CNAB:</h3>
         <select 
           v-model="selectedCnabType" 
-          class="select"
+          class="form-input"
           @change="handleCnabChange"
         >
           <option value="">Selecione um tipo</option>
@@ -29,7 +29,7 @@
 
       <Cnab240Form
         v-if="selectedCnabType === 'CNAB240'"
-        ref="cnab240Form"
+        ref="cnb240Form"
         formType="CNAB240"
         :initial-data="bankData"
         :bank="bank"
@@ -44,7 +44,7 @@
       
       <Cnab400Form
         v-if="selectedCnabType === 'CNAB400'"
-        ref="cnab400Form"
+        ref="cnb400Form"
         formType="CNAB400"
         :initial-data="bankData"
         :bank="bank"
@@ -137,23 +137,6 @@ export default defineComponent({
   computed: {
     availableCnabTypes: function() {
       return this.cnabTypes || [];
-    },
-    isFormValid: function() {
-      if (!this.selectedCnabType) return false;
-
-      if (this.selectedCnabType === 'CNAB240') {
-        /** @type {any} */
-        const form = this.$refs.cnab240Form;
-        return form && form.validateFields();
-      }
-
-      if (this.selectedCnabType === 'CNAB400') {
-        /** @type {any} */
-        const form = this.$refs.cnab400Form;
-        return form && form.validateFields();
-      }
-
-      return false;
     }
   },
   methods: {
@@ -169,13 +152,13 @@ export default defineComponent({
     handleNext: function() {
       if (this.selectedCnabType === 'CNAB240') {
         /** @type {any} */
-        const form = this.$refs.cnab240Form;
+        const form = this.$refs.cnb240Form;
         if (form) {
           form.handleSubmit();
         }
       } else if (this.selectedCnabType === 'CNAB400') {
         /** @type {any} */
-        const form = this.$refs.cnab400Form;
+        const form = this.$refs.cnb400Form;
         if (form) {
           form.handleSubmit();
         }
@@ -191,9 +174,6 @@ export default defineComponent({
 
       this.$emit('next');
       this.$emit('update-company', allData);
-    },
-    validateFields: function() {
-      return this.isFormValid;
     }
   }
 });
@@ -203,18 +183,25 @@ export default defineComponent({
 .navigation-buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-top: 1rem;
   padding: 1rem;
+  background-color: white;
+  border-top: 1px solid #eee;
+  min-height: 60px;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 .secondary-button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.25rem;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  border-radius: 4px;
   background: #fff;
   color: #666;
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -224,23 +211,38 @@ export default defineComponent({
   border-color: #ccc;
 }
 
-.next-button {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  background: #4a90e2;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
+.form-section {
+  margin-bottom: 0.75rem;
 }
 
-.next-button:hover:not(:disabled) {
-  background: #357abd;
+.section-title {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
 }
 
-.next-button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
+.form-input {
+  padding: 0.375rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  min-height: 32px;
+  width: 100%;
+  box-sizing: border-box;
+  line-height: 1.2;
+}
+
+select.form-input {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-left: 0.375rem;
+  padding-right: 2rem;
+  height: 32px;
+  min-height: 32px;
 }
 </style>

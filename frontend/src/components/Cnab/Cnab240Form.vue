@@ -1,17 +1,17 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="form-grid">
+  <form class="form-grid">
     <!-- Seção 0: Seleção de Método de Envio -->
     <div class="form-section">
       <h3 class="section-title">Seleção de Método de Envio</h3>
       <div class="form-group">
-        <label for="transportadora">Transportadora</label>
+        <label for="transportadora">Método de Envio</label>
         <select
           id="transportadora"
           v-model="form.transportadora"
           class="form-input"
           required
         >
-          <option value="">Selecione um metodo de envio</option>
+          <option value="">Selecione um método de envio</option>
           <option value="finnet">Finnet</option>
           <option value="nexxera">Nexxera</option>
         </select>
@@ -23,26 +23,25 @@
       <h3 class="section-title">Dados da Empresa</h3>
       <div class="form-row">
         <div class="form-group col-cnpj">
-          <label for="cnpj">CNPJ</label>
-          <input
-            type="text"
-            id="cnpj"
+          <ValidatedInput
             v-model="form.cnpj"
-            class="form-input"
-            required
+            label="CNPJ"
+            id="cnpj"
             placeholder="00.000.000/0000-00"
-            v-mask="'cnpj'"
+            validation-type="cnpj"
+            required
+            @validation-change="handleValidationChange"
           />
         </div>
         <div class="form-group col-name">
-          <label for="legalName">Nome Legal</label>
-          <input
-            type="text"
-            id="legalName"
+          <ValidatedInput
             v-model="form.legalName"
-            class="form-input"
-            required
+            label="Nome Legal"
+            id="legalName"
             placeholder="Razão social"
+            validation-type="name"
+            required
+            @validation-change="handleValidationChange"
           />
         </div>
       </div>
@@ -59,59 +58,57 @@
             id="bank"
             :value="bankDisplay"
             class="form-input"
-            required
             disabled
+            required
           />
           <input type="hidden" v-model="form.bankId">
         </div>
         <div class="form-group col-agency">
-          <label for="branchNumber">Agência</label>
-          <input
-            type="text"
-            id="branchNumber"
+          <ValidatedInput
             v-model="form.branchNumber"
-            class="form-input"
-            required
+            label="Agência"
+            id="branchNumber"
             placeholder="Número da agência"
-            v-mask="'agency'"
+            validation-type="branchNumber"
+            required
+            @validation-change="handleValidationChange"
           />
         </div>
         <div class="form-group col-account">
-          <label for="accountNumber">Conta</label>
-          <input
-            type="text"
-            id="accountNumber"
+          <ValidatedInput
             v-model="form.accountNumber"
-            class="form-input"
-            required
+            label="Conta"
+            id="accountNumber"
             placeholder="Número da conta"
-            v-mask="'account'"
+            validation-type="accountNumber"
+            required
+            @validation-change="handleValidationChange"
           />
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group col-uf">
-          <label for="ufBank">UF do Banco</label>
-          <input
-            type="text"
-            id="ufBank"
+          <ValidatedInput
             v-model="form.ufBank"
-            class="form-input"
-            required
+            label="UF do Banco"
+            id="ufBank"
             placeholder="Estado"
+            validation-type="uf"
             maxlength="2"
+            required
+            @validation-change="handleValidationChange"
           />
         </div>
         <div class="form-group col-city">
-          <label for="bankCity">Cidade do Banco</label>
-          <input
-            type="text"
-            id="bankCity"
+          <ValidatedInput
             v-model="form.bankCity"
-            class="form-input"
-            required
+            label="Cidade do Banco"
+            id="bankCity"
             placeholder="Cidade"
+            validation-type="city"
+            required
+            @validation-change="handleValidationChange"
           />
         </div>
       </div>
@@ -122,119 +119,162 @@
       <h3 class="section-title">Contato da Empresa</h3>
       <div class="form-row">
         <div class="form-group col-name">
-          <label for="companyContact.name">Nome</label>
-          <input
-            type="text"
-            id="companyContact.name"
+          <ValidatedInput
             v-model="form.companyContact.name"
-            class="form-input"
-            required
+            label="Nome"
+            id="companyContactName"
             placeholder="Nome do contato"
+            validation-type="name"
+            required
+            @validation-change="handleValidationChange"
           />
         </div>
         <div class="form-group col-email">
-          <label for="companyContact.email">Email</label>
-          <input
-            type="email"
-            id="companyContact.email"
+          <ValidatedInput
             v-model="form.companyContact.email"
-            class="form-input"
+            label="Email"
+            id="companyContactEmail"
+            type="email"
+            placeholder="email@empresa.com"
+            validation-type="email"
             required
-            placeholder="Email do contato"
+            @validation-change="handleValidationChange"
           />
         </div>
+      </div>
+      <div class="form-row">
         <div class="form-group col-phone">
-          <label for="companyContact.fone">Telefone</label>
-          <input
-            type="text"
-            id="companyContact.fone"
+          <ValidatedInput
             v-model="form.companyContact.fone"
-            class="form-input"
+            label="Telefone"
+            id="companyContactPhone"
+            placeholder="(11) 99999-9999"
+            validation-type="phone"
             required
-            placeholder="Telefone do contato"
-            v-mask="'phone'"
+            @validation-change="handleValidationChange"
           />
         </div>
         <div class="form-group col-position">
-          <label for="companyContact.positionCompany">Cargo</label>
-          <input
-            type="text"
-            id="companyContact.positionCompany"
+          <ValidatedInput
             v-model="form.companyContact.positionCompany"
-            class="form-input"
+            label="Cargo"
+            id="companyContactPosition"
+            placeholder="Cargo na empresa"
+            validation-type="position"
             required
-            placeholder="Cargo do contato"
+            @validation-change="handleValidationChange"
           />
         </div>
       </div>
     </div>
 
-    <!-- Seção 4: Contato do Gerente Bancário -->
+    <!-- Seção 4: Contato do Gerente do Banco -->
     <div class="form-section">
-      <h3 class="section-title">Contato do Gerente Bancário</h3>
+      <h3 class="section-title">Contato do Gerente do Banco</h3>
       <div class="form-row">
         <div class="form-group col-name">
-          <label for="bankManagerContact.name">Nome</label>
-          <input
-            type="text"
-            id="bankManagerContact.name"
+          <ValidatedInput
             v-model="form.bankManagerContact.name"
-            class="form-input"
-            required
+            label="Nome"
+            id="bankManagerContactName"
             placeholder="Nome do gerente"
+            validation-type="name"
+            required
+            @validation-change="handleValidationChange"
           />
         </div>
         <div class="form-group col-email">
-          <label for="bankManagerContact.email">Email</label>
-          <input
-            type="email"
-            id="bankManagerContact.email"
+          <ValidatedInput
             v-model="form.bankManagerContact.email"
-            class="form-input"
+            label="Email"
+            id="bankManagerContactEmail"
+            type="email"
+            placeholder="email@banco.com"
+            validation-type="email"
             required
-            placeholder="Email do gerente"
+            @validation-change="handleValidationChange"
           />
         </div>
+      </div>
+      <div class="form-row">
         <div class="form-group col-phone">
-          <label for="bankManagerContact.fone">Telefone</label>
-          <input
-            type="text"
-            id="bankManagerContact.fone"
+          <ValidatedInput
             v-model="form.bankManagerContact.fone"
-            class="form-input"
+            label="Telefone"
+            id="bankManagerContactPhone"
+            placeholder="(11) 99999-9999"
+            validation-type="phone"
             required
-            placeholder="Telefone do gerente"
-            v-mask="'phone'"
+            @validation-change="handleValidationChange"
           />
         </div>
         <div class="form-group col-position">
-          <label for="bankManagerContact.positionCompany">Cargo</label>
-          <input
-            type="text"
-            id="bankManagerContact.positionCompany"
+          <ValidatedInput
             v-model="form.bankManagerContact.positionCompany"
-            class="form-input"
+            label="Cargo"
+            id="bankManagerContactPosition"
+            placeholder="Cargo no banco"
+            validation-type="position"
             required
-            placeholder="Cargo do gerente"
+            @validation-change="handleValidationChange"
           />
         </div>
       </div>
     </div>
 
-    <!-- Seção 5: Outras Informações -->
+    <!-- Seção 5: Convênio -->
     <div class="form-section">
-      <h3 class="section-title">Outras Informações</h3>
-      <div class="form-group">
-        <label for="agreement">Acordo</label>
-        <input
-          type="text"
-          id="agreement"
-          v-model="form.agreement"
-          class="form-input"
-          required
-          placeholder="Termo de acordo"
-        />
+      <h3 class="section-title">Convênio</h3>
+      <div class="form-row">
+        <div class="form-group col-agreement">
+          <ValidatedInput
+            v-model="form.agreement"
+            label="Convênio"
+            id="agreement"
+            placeholder="Número do convênio"
+            validation-type="agreement"
+            required
+            @validation-change="handleValidationChange"
+          />
+        </div>
       </div>
+    </div>
+
+    <!-- Seção 6: Preferência de Contato -->
+    <div class="form-section">
+      <h3 class="section-title">Preferência de Contato</h3>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            v-model="form.preferenceByContact"
+            value="W"
+            class="checkbox-input"
+          />
+          WhatsApp
+        </label>
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            v-model="form.preferenceByContact"
+            value="E"
+            class="checkbox-input"
+          />
+          Email
+        </label>
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            v-model="form.preferenceByContact"
+            value="T"
+            class="checkbox-input"
+          />
+          Telefone
+        </label>
+      </div>
+      <p v-if="preferenceLabel" class="preference-text">
+        Preferências selecionadas: {{ preferenceLabel }}
+      </p>
     </div>
 
     <!-- Modal de pré-visualização -->
@@ -250,7 +290,7 @@
               <iframe 
                 :srcdoc="currentDocument === 'finnet' ? finalHtmls.finnet : finalHtmls.nexxera" 
                 width="100%" 
-                height="500px" 
+                height="350px" 
                 style="border:1px solid #ccc;"
               />
             </div>
@@ -268,9 +308,14 @@
 
 <script>
 import { applyMask } from '@/utils/masks';
+import { validateForm } from '@/utils/validation';
+import ValidatedInput from '@/components/ValidatedInput.vue';
 
 export default {
   name: 'Cnab240Form',
+  components: {
+    ValidatedInput
+  },
   props: {
     initialData: Object,
     bankName: { type: String, required: true },
@@ -291,6 +336,7 @@ export default {
         nexxera: ''
       },
       documentHash: '',
+      validationErrors: {},
       form: {
         transportadora: '',
         bankId: this.bankId || '',
@@ -315,7 +361,8 @@ export default {
       return this.form.preferenceByContact.map(p => map[p]).join(', ');
     },
     isFormValid() {
-      return this.validateFields();
+      const validation = validateForm(this.form);
+      return validation.isValid && Object.keys(this.validationErrors).length === 0;
     }
   },
   created() {
@@ -345,6 +392,13 @@ export default {
     }
   },
   methods: {
+    handleValidationChange(validation) {
+      if (validation.isValid) {
+        delete this.validationErrors[validation.field];
+      } else {
+        this.validationErrors[validation.field] = validation.message;
+      }
+    },
     async fetchCnpjData(cnpj) {
       try {
         const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
@@ -370,44 +424,66 @@ export default {
       }
     },
     async handleSubmit() {
-      // Primeiro abre o modal de pré-visualização
-      this.showPreviewModal = true;
+      if (!this.isFormValid) {
+        alert('Por favor, corrija os erros de validação antes de continuar.');
+        return;
+      }
+
       this.loading = true;
       
       try {
-        // Busca o HTML do backend para pré-visualização
-        const endpoint = this.form.transportadora === 'finnet' 
-          ? 'http://localhost:8000/letter/finnet'
-          : 'http://localhost:8000/letter/nexxera';
+        // Converte valores string para número antes de enviar
+        const formData = {
+          ...this.form,
+          accountNumber: this.form.accountNumber ? parseInt(this.form.accountNumber) || 0 : 0,
+          branchNumber: this.form.branchNumber ? parseInt(this.form.branchNumber) || 0 : 0
+        };
         
-        const response = await fetch(endpoint, {
+        // Gera o preview para Finnet
+        const finnetResponse = await fetch('http://localhost:8000/letter/finnet', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(this.form)
+          body: JSON.stringify({
+            ...formData,
+            carrier: 'FINNET'
+          })
         });
         
-        if (!response.ok) {
-          throw new Error('Erro ao carregar pré-visualização');
+        if (finnetResponse.ok) {
+          const finnetData = await finnetResponse.json();
+          this.finalHtmls.finnet = finnetData.template[0];
+          this.documentHash = finnetData.hashed;
         }
         
-        const data = await response.json();
+        // Gera o preview para Nexxera
+        const nexxeraResponse = await fetch('http://localhost:8000/letter/nexxera', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData,
+            carrier: 'NEXXERA'
+          })
+        });
         
-        // Armazena o HTML retornado
-        if (this.form.transportadora === 'finnet') {
-          this.finalHtmls.finnet = data.template;
-        } else {
-          this.finalHtmls.nexxera = data.template;
+        if (nexxeraResponse.ok) {
+          const nexxeraData = await nexxeraResponse.json();
+          this.finalHtmls.nexxera = nexxeraData.template[0];
         }
         
-        this.documentHash = data.hashed;
-        this.loading = false;
+        // Emite os dados atualizados
+        this.$emit('update', formData);
+        
+        // Abre o modal de preview
+        this.showPreviewModal = true;
       } catch (error) {
-        console.error('Erro ao carregar pré-visualização:', error);
+        console.error('Erro ao processar formulário:', error);
+        alert('Erro ao processar formulário. Tente novamente.');
+      } finally {
         this.loading = false;
-        this.showPreviewModal = false;
-        alert('Erro ao carregar pré-visualização. Verifique os dados do formulário.');
       }
     },
     async submitForm() {
@@ -435,28 +511,15 @@ export default {
         // Handle error
       }
     },
-    validateFields() {
-      const requiredFields = [
-        'bankId', 'legalName', 'cnpj', 'accountNumber', 'branchNumber',
-        'ufBank', 'bankCity', 'agreement', 'transportadora'
-      ];
-
-      const requiredContactFields = [
-        'companyContact.name', 'companyContact.email', 'companyContact.fone', 'companyContact.positionCompany',
-        'bankManagerContact.name', 'bankManagerContact.email', 'bankManagerContact.fone', 'bankManagerContact.positionCompany'
-      ];
-
-      const isValid = requiredFields.every(field => !!this.form[field]) &&
-        requiredContactFields.every(field => {
-          const [parent, child] = field.split('.');
-          return !!this.form[parent]?.[child];
-        });
-
-      return isValid;
-    },
     finalize() {
       this.showPreviewModal = false;
-      this.$emit('update', { ...this.form, hash: this.documentHash });
+      // Converte valores string para número antes de enviar
+      const formData = {
+        ...this.form,
+        accountNumber: this.form.accountNumber ? parseInt(this.form.accountNumber) || 0 : 0,
+        branchNumber: this.form.branchNumber ? parseInt(this.form.branchNumber) || 0 : 0
+      };
+      this.$emit('update', { ...formData, hash: this.documentHash });
       this.$emit('close');
       // Redireciona para o histórico após envio bem-sucedido
       this.$router.push('/historico');
@@ -470,106 +533,148 @@ export default {
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 0.375rem;
+  padding: 0.375rem;
   max-width: 1200px;
   margin: 0 auto;
+  height: auto;
+  overflow: visible;
+  margin-bottom: 1rem;
 }
 
 .form-section {
   background: #f8f9fa;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 0.5rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 0.375rem;
 }
 
 .section-title {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   color: #2c3e50;
-  font-size: 1.2rem;
-  border-bottom: 2px solid #e9ecef;
-  padding-bottom: 0.5rem;
-}
-
-.form-group {
-  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 0.25rem;
+  font-weight: 600;
 }
 
 .form-row {
   display: grid;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.375rem;
+  margin-bottom: 0.375rem;
 }
 
-/* Column widths */
-.col-cnpj { grid-column: span 1; }
-.col-name { grid-column: span 2; }
-.col-bank { grid-column: span 2; }
-.col-agency { grid-column: span 1; }
-.col-account { grid-column: span 1; }
-.col-uf { grid-column: span 1; }
-.col-city { grid-column: span 2; }
-.col-email { grid-column: span 2; }
-.col-phone { grid-column: span 1; }
-.col-position { grid-column: span 1; }
-
-.form-row {
-  grid-template-columns: repeat(4, 1fr);
+.form-group {
+  margin-bottom: 0.375rem;
 }
 
 .form-input {
-  width: 100%;
-  padding: 0.5rem;
+  padding: 0.375rem;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  min-height: 32px;
 }
 
 .form-input:focus {
-  border-color: #4a90e2;
   outline: none;
+  border-color: #4a90e2;
   box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.form-input.error {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
 }
 
 select.form-input {
   background-color: white;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 30px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  min-height: 32px;
+  line-height: 1.2;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-left: 0.375rem;
+  padding-right: 2rem;
+}
+
+select.form-input option {
+  padding: 6px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.form-input:disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+label {
+  font-weight: 500;
+  margin-bottom: 0.0625rem;
+  color: #333;
+  font-size: 0.75rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.125rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.checkbox-input {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
+.preference-text {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #666;
+  font-style: italic;
 }
 
 .form-actions {
   display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  padding: 1rem;
+  justify-content: center;
+  margin-top: 0.75rem;
 }
 
-.btn {
-  padding: 0.5rem 1rem;
+.submit-btn {
+  padding: 0.5rem 1.5rem;
   border: none;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.btn-primary {
+  transition: all 0.2s;
   background-color: #4a90e2;
   color: white;
+  font-weight: 500;
 }
 
-.btn-primary:hover {
-  background-color: #357abd;
-}
-
-.btn-secondary {
-  background-color: #6c757d;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #5a6268;
-}
-
+/* Responsividade */
 @media (max-width: 768px) {
   .form-row {
     grid-template-columns: 1fr;
@@ -584,27 +689,42 @@ select.form-input {
   .col-city,
   .col-email,
   .col-phone,
-  .col-position {
+  .col-position,
+  .col-agreement {
     grid-column: span 1;
   }
 }
 
+/* Classes específicas para colunas */
+.col-cnpj { grid-column: span 1; }
+.col-name { grid-column: span 2; }
+.col-bank { grid-column: span 2; }
+.col-agency { grid-column: span 1; }
+.col-account { grid-column: span 1; }
+.col-uf { grid-column: span 1; }
+.col-city { grid-column: span 2; }
+.col-email { grid-column: span 2; }
+.col-phone { grid-column: span 1; }
+.col-position { grid-column: span 1; }
+.col-agreement { grid-column: span 4; }
+
 .document-navigation {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
 }
 
 .nav-btn {
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.75rem;
   background: none;
   border: none;
   cursor: pointer;
   font-weight: 500;
   color: #666;
   border-bottom: 2px solid transparent;
+  font-size: 0.85rem;
 }
 
 .nav-btn.active {
@@ -617,19 +737,18 @@ select.form-input {
 }
 
 .document-viewer {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .document-viewer h4 {
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
   color: #333;
 }
 
-.document-container {
-  border-radius: 8px;
-  height: 550px;
-  overflow: hidden;
+.document-container iframe {
+  max-height: 400px;
+  border: 1px solid #ccc;
 }
 
 .hash-section {
@@ -642,40 +761,63 @@ select.form-input {
 
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1000;
-  overflow: hidden;
-  border: none;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  max-width: 1000px;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  max-height: none;
-  overflow-y: auto;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
 }
+
 .loading-section {
   text-align: center;
   padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
 }
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
 .btn-confirm { 
   background: #28a745; 
   color: white; 
 }
+
+.btn-confirm:hover {
+  background: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
 .btn-cancel { 
-  background: #dc3545; 
+  background: #6c757d; 
   color: white; 
+}
+
+.btn-cancel:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 </style>

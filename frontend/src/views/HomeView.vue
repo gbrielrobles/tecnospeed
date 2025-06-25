@@ -146,20 +146,23 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-height: calc(100vh - 60px);
+  overflow: visible;
 }
 
 .collapsed-dropdown {
   display: flex;
   align-items: center;
   padding: 12px 16px;
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-lg);
   cursor: pointer;
   user-select: none;
+  transition: background-color 0.2s ease;
 }
 
 .collapsed-dropdown:hover {
-  background-color: #f0f0f0;
+  background-color: var(--gray-200);
 }
 </style>

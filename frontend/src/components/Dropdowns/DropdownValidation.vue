@@ -9,10 +9,9 @@
     </div>
     
     <div v-if="isOpen" class="dropdown-content">
-      
       <div class="buttons-container">
-        <button class="back-button" @click="$emit('back')">Voltar</button>
-        <button class="submit-button">Enviar</button>
+        <button class="secondary-button" @click="$emit('back')">Voltar</button>
+        <button class="next-button">Enviar</button>
       </div>
     </div>
   </div>

@@ -4,8 +4,14 @@
     
     <div class="content">
       <div class="header-section">
-        <h1 class="page-title">Histórico de Cartas Enviadas</h1>
-        <p class="page-subtitle">Consulte todas as cartas de abertura de relacionamento enviadas</p>
+        <div class="title-container">
+          <h1 class="page-title">Histórico de Cartas Enviadas</h1>
+          <p class="page-subtitle">Consulte todas as cartas de abertura de relacionamento enviadas</p>
+        </div>
+        <button @click="goToCreate" class="new-letter-btn">
+          <span class="icon">📝</span>
+          Nova Carta
+        </button>
       </div>
 
       <div class="filters-section">
@@ -13,7 +19,7 @@
           <input 
             type="text" 
             v-model="searchTerm" 
-            placeholder="Buscar por empresa, banco ou status..."
+            placeholder="Buscar por empresa, banco, produtos ou status..."
             class="search-input"
           />
         </div>
@@ -59,6 +65,11 @@
               </p>
             </div>
 
+            <div class="products-info">
+              <h4 class="products-title">Produtos</h4>
+              <p class="products-list">{{ getProductsText(letter) }}</p>
+            </div>
+
             <div class="status-info">
               <span :class="['status-badge', getStatusClass(letter.status)]">
                 {{ getStatusLabel(letter.status) }}
@@ -72,18 +83,20 @@
             <button 
               @click="viewLetter(letter)" 
               class="action-btn view-btn"
-              title="Visualizar carta"
+              :disabled="!letter.base64letter"
+              :title="letter.base64letter ? 'Visualizar carta' : 'PDF não disponível'"
             >
               <span class="icon">👁️</span>
-              Visualizar
+              {{ letter.base64letter ? 'Visualizar' : 'Indisponível' }}
             </button>
             <button 
               @click="downloadLetter(letter)" 
               class="action-btn download-btn"
-              title="Baixar carta"
+              :disabled="!letter.base64letter"
+              :title="letter.base64letter ? 'Baixar carta' : 'PDF não disponível'"
             >
               <span class="icon">📥</span>
-              Baixar
+              {{ letter.base64letter ? 'Baixar' : 'Indisponível' }}
             </button>
           </div>
         </div>
@@ -105,9 +118,12 @@
           <iframe 
             :srcdoc="selectedLetterHtml" 
             width="100%" 
-            height="600px" 
+            height="100%" 
             style="border:1px solid #ccc;"
           />
+        </div>
+        <div class="modal-footer">
+          <button @click="closeViewModal" class="modal-btn cancel-btn">Fechar</button>
         </div>
       </div>
     </div>
@@ -154,9 +170,13 @@ export default {
         const term = this.searchTerm.toLowerCase();
         filtered = filtered.filter(letter => {
           const letterData = this.getLetterData(letter);
+          const products = this.getProducts(letter);
+          const productsText = products.map(p => p.name).join(' ').toLowerCase();
+          
           return (letterData.legalName || '').toLowerCase().includes(term) ||
                  (letterData.cnpj || '').includes(term) ||
                  (letterData.name || '').toLowerCase().includes(term) ||
+                 productsText.includes(term) ||
                  this.getStatusLabel(letter.status).toLowerCase().includes(term) ||
                  (letter.carrier || '').toLowerCase().includes(term);
         });
@@ -169,6 +189,37 @@ export default {
     this.loadHistory();
   },
   methods: {
+    goToCreate() {
+      this.$router.push('/create');
+    },
+    // Função auxiliar para processar base64 de forma robusta
+    processBase64ToBlob(base64String, mimeType = 'application/pdf') {
+      try {
+        // Remove possíveis espaços e quebras de linha
+        const cleanBase64 = base64String.replace(/\s/g, '');
+        
+        // Decodifica o base64
+        const binaryString = atob(cleanBase64);
+        
+        // Converte para Uint8Array
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        console.log('Base64 processado com sucesso');
+        console.log('Tamanho original:', base64String.length);
+        console.log('Tamanho limpo:', cleanBase64.length);
+        console.log('Tamanho decodificado:', bytes.length);
+        console.log('Primeiros bytes:', Array.from(bytes.slice(0, 10)));
+        
+        return new Blob([bytes], { type: mimeType });
+      } catch (error) {
+        console.error('Erro ao processar base64:', error);
+        throw error;
+      }
+    },
+    
     async loadHistory() {
       this.loading = true;
       this.error = null;
@@ -225,6 +276,7 @@ export default {
             legalName: 'Dados não disponíveis',
             cnpj: 'N/A',
             name: 'N/A',
+            products: [],
             bank: {
               branchNumber: 'N/A',
               accountNumber: 'N/A'
@@ -232,28 +284,86 @@ export default {
           };
         }
         
+        // O campo 'letter' contém um JSON string com todos os dados
         const parsedData = JSON.parse(letter.letter);
-        return parsedData || {
+        
+        // Verifica se os dados estão no formato esperado
+        if (parsedData && typeof parsedData === 'object') {
+          // Novo formato com bank e client separados
+          if (parsedData.bank && parsedData.client) {
+            return {
+              legalName: parsedData.client.legalName || 'N/A',
+              cnpj: parsedData.client.cnpj || 'N/A',
+              name: parsedData.bank.name || 'N/A',
+              products: parsedData.bank.products || [],
+              bank: {
+                branchNumber: parsedData.client.branchNumber || 'N/A',
+                accountNumber: parsedData.client.accountNumber || 'N/A'
+              }
+            };
+          }
+          
+          // Formato antigo com estrutura plana
+          return {
+            legalName: parsedData.legalName || 'N/A',
+            cnpj: parsedData.cnpj || 'N/A',
+            name: parsedData.name || 'N/A',
+            products: parsedData.products || [],
+            bank: parsedData.bank || {
+              branchNumber: 'N/A',
+              accountNumber: 'N/A'
+            }
+          };
+        }
+        
+        return {
           legalName: 'Erro ao carregar dados',
           cnpj: 'N/A',
           name: 'N/A',
+          products: [],
           bank: {
             branchNumber: 'N/A',
             accountNumber: 'N/A'
           }
         };
       } catch (error) {
-        console.error('Erro ao fazer parse da carta:', error);
+        console.error('Erro ao fazer parse da carta:', error, letter);
         return {
           legalName: 'Erro ao carregar dados',
           cnpj: 'N/A',
           name: 'N/A',
+          products: [],
           bank: {
             branchNumber: 'N/A',
             accountNumber: 'N/A'
           }
         };
       }
+    },
+    
+    getProducts(letter) {
+      try {
+        const letterData = this.getLetterData(letter);
+        // Verifica se products é um array e tem a estrutura esperada
+        if (Array.isArray(letterData.products)) {
+          // Filtra apenas produtos selecionados se houver a propriedade selected
+          const selectedProducts = letterData.products.filter(product => 
+            product.selected !== false // Inclui produtos sem propriedade selected ou com selected: true
+          );
+          return selectedProducts;
+        }
+        return [];
+      } catch (error) {
+        console.error('Erro ao obter produtos:', error);
+        return [];
+      }
+    },
+    
+    getProductsText(letter) {
+      const products = this.getProducts(letter);
+      if (products.length === 0) return 'Nenhum produto';
+      
+      return products.map(product => product.name).join(', ');
     },
     
     filterByStatus(status) {
@@ -293,30 +403,84 @@ export default {
     
     async viewLetter(letter) {
       try {
-        if (letter.letter) {
-          // Decodifica o PDF em base64
-          const pdfData = atob(letter.letter);
-          const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
-          const pdfUrl = URL.createObjectURL(pdfBlob);
+        console.log('Visualizando carta:', letter);
+        console.log('base64letter disponível:', !!letter.base64letter);
+        console.log('Tamanho do base64letter:', letter.base64letter?.length);
+        
+        if (letter.base64letter) {
+          // Verifica se o base64 é válido
+          if (letter.base64letter.length < 100) {
+            console.error('Base64 muito pequeno, pode estar inválido');
+            alert('PDF não está disponível ou está corrompido');
+            return;
+          }
           
-          // Abre o PDF em uma nova aba
-          window.open(pdfUrl, '_blank');
+          // Processa o base64 usando a função auxiliar
+          const pdfBlob = this.processBase64ToBlob(letter.base64letter);
+          console.log('Blob criado, tamanho:', pdfBlob.size);
+          
+          // Verifica se os primeiros bytes são do PDF
+          const arrayBuffer = await pdfBlob.arrayBuffer();
+          const uint8Array = new Uint8Array(arrayBuffer);
+          const pdfSignature = String.fromCharCode(...uint8Array.slice(0, 4));
+          
+          if (pdfSignature !== '%PDF') {
+            console.error('Dados não parecem ser um PDF válido:', pdfSignature);
+            alert('Arquivo não é um PDF válido');
+            return;
+          }
+          
+          // Cria URL do Blob e abre em nova aba
+          const pdfUrl = URL.createObjectURL(pdfBlob);
+          console.log('Abrindo PDF com URL:', pdfUrl);
+          
+          const newWindow = window.open(pdfUrl, '_blank');
+          
+          if (!newWindow) {
+            console.error('Popup bloqueado pelo navegador');
+            alert('Popup bloqueado. Permita popups para este site.');
+            return;
+          }
           
           // Limpa a URL após um tempo
           setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+        } else {
+          alert('PDF não disponível para visualização');
         }
       } catch (error) {
         console.error('Erro ao visualizar carta:', error);
-        alert('Erro ao visualizar carta');
+        alert('Erro ao visualizar carta: ' + error.message);
       }
     },
     
     async downloadLetter(letter) {
       try {
-        if (letter.letter) {
-          // Decodifica o PDF em base64
-          const pdfData = atob(letter.letter);
-          const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
+        console.log('Baixando carta:', letter);
+        console.log('base64letter disponível:', !!letter.base64letter);
+        console.log('Tamanho do base64letter:', letter.base64letter?.length);
+        
+        if (letter.base64letter) {
+          // Verifica se o base64 é válido
+          if (letter.base64letter.length < 100) {
+            console.error('Base64 muito pequeno, pode estar inválido');
+            alert('PDF não está disponível ou está corrompido');
+            return;
+          }
+          
+          // Processa o base64 usando a função auxiliar
+          const pdfBlob = this.processBase64ToBlob(letter.base64letter);
+          console.log('Blob criado, tamanho:', pdfBlob.size);
+          
+          // Verifica se os primeiros bytes são do PDF
+          const arrayBuffer = await pdfBlob.arrayBuffer();
+          const uint8Array = new Uint8Array(arrayBuffer);
+          const pdfSignature = String.fromCharCode(...uint8Array.slice(0, 4));
+          
+          if (pdfSignature !== '%PDF') {
+            console.error('Dados não parecem ser um PDF válido:', pdfSignature);
+            alert('Arquivo não é um PDF válido');
+            return;
+          }
           
           // Cria link de download
           const downloadUrl = URL.createObjectURL(pdfBlob);
@@ -336,10 +500,12 @@ export default {
           
           // Limpa a URL
           setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+        } else {
+          alert('PDF não disponível para download');
         }
       } catch (error) {
         console.error('Erro ao baixar carta:', error);
-        alert('Erro ao baixar carta');
+        alert('Erro ao baixar carta: ' + error.message);
       }
     },
     
@@ -353,11 +519,11 @@ export default {
 
 <style scoped>
 .historico-container {
-  height: 100vh;
   background: #f5f5f5;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .content {
@@ -365,11 +531,23 @@ export default {
   margin: 0 auto;
   padding: 0.75rem;
   flex: 1;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .header-section {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 1rem;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.title-container {
+  flex: 1;
+  text-align: left;
 }
 
 .page-title {
@@ -383,16 +561,52 @@ export default {
   font-size: 0.9rem;
 }
 
+.new-letter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.new-letter-btn:hover {
+  background: #357abd;
+}
+
+.new-letter-btn .icon {
+  font-size: 1rem;
+}
+
 .filters-section {
   background: white;
   padding: 0.75rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   margin-bottom: 1rem;
+  height: 100px;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  position: relative;
+  overflow: visible;
 }
 
 .search-box {
   margin-bottom: 0.5rem;
+  flex-shrink: 0;
+  width: 100%;
 }
 
 .search-input {
@@ -401,12 +615,20 @@ export default {
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 0.9rem;
+  height: 36px;
+  box-sizing: border-box;
 }
 
 .filter-buttons {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  height: 40px;
+  align-items: center;
+  flex-shrink: 0;
+  width: 100%;
+  /* Força os botões a manterem posição */
+  justify-content: flex-start;
 }
 
 .filter-btn {
@@ -417,6 +639,8 @@ export default {
   cursor: pointer;
   transition: all 0.2s;
   font-size: 0.8rem;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .filter-btn.active {
@@ -428,6 +652,7 @@ export default {
 .loading-section {
   text-align: center;
   padding: 1.5rem;
+  width: 100%;
 }
 
 .loading-spinner {
@@ -448,6 +673,7 @@ export default {
 .error-section {
   text-align: center;
   padding: 1.5rem;
+  width: 100%;
 }
 
 .error-message {
@@ -465,6 +691,10 @@ export default {
   font-size: 0.85rem;
 }
 
+.history-list {
+  width: 100%;
+}
+
 .letter-card {
   background: white;
   border-radius: 8px;
@@ -476,12 +706,14 @@ export default {
   align-items: center;
   gap: 0.75rem;
   min-height: 70px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .letter-info {
   flex: 1;
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr;
+  grid-template-columns: 2fr 2fr 2fr 1fr;
   gap: 0.75rem;
   align-items: center;
 }
@@ -521,6 +753,26 @@ export default {
 }
 
 .account-info {
+  color: #666;
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.products-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.products-title {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #4a90e2;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.products-list {
   color: #666;
   font-size: 0.75rem;
   margin: 0;
@@ -594,6 +846,18 @@ export default {
   white-space: nowrap;
 }
 
+.action-btn:disabled {
+  background: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.action-btn:disabled:hover {
+  background: #ccc !important;
+  color: #666 !important;
+}
+
 .view-btn {
   background: #17a2b8;
   color: white;
@@ -620,6 +884,8 @@ export default {
   text-align: center;
   padding: 1.5rem;
   color: #666;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .modal-overlay {
@@ -633,14 +899,19 @@ export default {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 0.5rem;
 }
 
 .modal-content {
   background: white;
   border-radius: 8px;
-  max-width: 90%;
-  max-height: 90%;
-  width: 800px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  width: 95%;
+  max-width: 1400px;
+  height: 95vh;
+  max-height: 900px;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
@@ -650,6 +921,14 @@ export default {
   align-items: center;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid #eee;
+  background: #f8f9fa;
+  flex-shrink: 0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.2rem;
 }
 
 .close-btn {
@@ -658,15 +937,101 @@ export default {
   font-size: 1.5rem;
   cursor: pointer;
   color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.close-btn:hover {
+  background: #e9ecef;
 }
 
 .modal-body {
-  padding: 1.5rem;
+  flex: 1;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.modal-body iframe {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #eee;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.modal-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  min-width: 80px;
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
   .content {
     padding: 0.5rem;
+    /* Remove largura mínima em telas pequenas */
+    min-width: auto;
+  }
+  
+  .header-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .title-container {
+    text-align: center;
+  }
+  
+  .new-letter-btn {
+    align-self: center;
+  }
+  
+  .filters-section {
+    width: 100%;
+    min-width: auto;
+    max-width: none;
+    box-sizing: border-box;
+    height: auto;
+    min-height: 100px;
+  }
+  
+  .search-input {
+    min-width: auto;
   }
   
   .letter-card {
@@ -692,6 +1057,8 @@ export default {
   
   .filter-buttons {
     justify-content: center;
+    height: auto;
+    min-height: 40px;
   }
   
   .page-title {

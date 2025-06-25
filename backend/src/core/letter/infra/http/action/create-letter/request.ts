@@ -12,12 +12,15 @@ import { BrazilianStates } from "core/letter/domain/enum/brazillian-states";
 
 
 class Contact {
+    @IsNotEmpty({ message: 'Nome é obrigatório.' })
     @IsString()
     name: string;
 
+    @IsNotEmpty({ message: 'Email é obrigatório.' })
     @IsEmail()
     email: string;
 
+    @IsNotEmpty({ message: 'Telefone é obrigatório.' })
     @IsPhone({ message: 'Telefone inválido. Ex: 44912345678' })
     @IsValidDDD()
     @Transform(({ value }) => {
@@ -36,17 +39,21 @@ class Contact {
     })
     fone: string;
 
+    @IsNotEmpty({ message: 'Cargo é obrigatório.' })
     @IsString()
     positionCompany: string;
 }
 
 export class GetLetterRequest {
+    @IsNotEmpty({ message: 'ID do banco é obrigatório.' })
     @IsString()
     bankId: string;
 
+    @IsNotEmpty({ message: 'Razão social é obrigatória.' })
     @IsString()
     legalName: string;
 
+    @IsNotEmpty({ message: 'CNPJ é obrigatório.' })
     @IsString()
     @IsCnpj()
     @Transform(({ value }) => {
@@ -55,9 +62,11 @@ export class GetLetterRequest {
     })
     cnpj: string;
 
+    @IsNotEmpty({ message: 'Número da conta é obrigatório.' })
     @IsValidAccountNumber()
     accountNumber: number;
 
+    @IsNotEmpty({ message: 'Número da agência é obrigatório.' })
     @IsValidBranchNumber()
     branchNumber: number;
 
@@ -80,12 +89,15 @@ export class GetLetterRequest {
     @Type(() => Contact)
     bankManagerContact: Contact;
 
+    @IsNotEmpty({ message: 'Convênio é obrigatório.' })
     @IsString()
     agreement: string
 
+    @IsNotEmpty({ message: 'UF do banco é obrigatória.' })
     @IsEnum(BrazilianStates)
     ufBank: string
 
+    @IsNotEmpty({ message: 'Cidade do banco é obrigatória.' })
     @IsString()
     bankCity: string
   

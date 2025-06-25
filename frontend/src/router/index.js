@@ -5,8 +5,8 @@ import HistoricoView from '@/views/HistoricoView.vue'
 
 const routes = [
   {
-    path: '/home',
-    name: 'Home',
+    path: '/create',
+    name: 'Create',
     component: HomeView
   },
   {

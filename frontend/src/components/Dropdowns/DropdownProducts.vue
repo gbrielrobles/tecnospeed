@@ -64,7 +64,7 @@
 export default {
   name: 'DropdownProducts',
   props: {
-    bankId: String ,
+    bankId: String,
     initialProductIds: {
       type: Array,
       default: () => []
@@ -100,8 +100,8 @@ export default {
   watch: {
     bankId: {
       immediate: true,
-      handler(newBankId) {
-        if (newBankId) {
+      handler(newBankId, oldBankId) {
+        if (newBankId && newBankId !== oldBankId) {
           this.fetchProducts(newBankId);
         }
       }
@@ -123,10 +123,13 @@ export default {
         this.products = data.products || [];
         this.bankData = data;
         
+        this.selectedProducts = [];
+        
       } catch (err) {
         console.error('Erro ao buscar produtos:', err);
         this.error = err.message;
         this.products = [];
+        this.selectedProducts = [];
       } finally {
         this.loading = false;
       }
