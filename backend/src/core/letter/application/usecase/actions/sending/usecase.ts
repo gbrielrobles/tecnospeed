@@ -37,7 +37,6 @@ export class SendingLetterUsecase {
                 }
             }, data.carrier)
 
-
             const result : string = await this.letterRepository.push({
                 bankId: data.bank.id,
                 carrier: data.carrier,

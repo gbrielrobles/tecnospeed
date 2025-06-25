@@ -4,6 +4,7 @@ import { Letter } from "core/letter/domain/letter";
 import { LetterRepository } from "core/letter/domain/port/repositories/prisma/letter.repository";
 import { PrismaAdapter } from "shared/infra/database/prisma/adapter";
 import { ZapierMappedResult } from "../zapier/mapper/zapier";
+import { StatusOfSending } from "@prisma/client";
 
 @Injectable()
 export class LetterRepositoryImpl implements LetterRepository {
@@ -43,25 +44,38 @@ export class LetterRepositoryImpl implements LetterRepository {
 
     async push(event$ : Letter) : Promise<string> {
         const { id, ...rest } = event$; 
-        const result = await this.prisma.letter.upsert({
-            create: {
-                letter: rest.letter,
-                carrier: rest.carrier,
-                status: rest.status as any,
-                ticket: rest.ticket,
-                clientId: rest.clientId,
-                createdAt: rest.createdAt,
-                updatedAt: rest.updatedAt,
-                base64letter: rest.base64letter as string,
-                id: id
-            },
-            update: {
-                status: rest.status as any,
-            },
-             where : {
-                id: id
-             }
-        }); 
+        const result = await this.prisma.$transaction(async (tsx) => {
+            const result = await tsx.letter.upsert({
+                create: {
+                    letter: rest.letter,
+                    carrier: rest.carrier,
+                    status: rest.status as any,
+                    ticket: rest.ticket,
+                    clientId: rest.clientId,
+                    createdAt: rest.createdAt,
+                    updatedAt: rest.updatedAt,
+                    base64letter: rest.base64letter as string,
+                    id: id
+                },
+                update: {
+                    status: rest.status as any,
+                },
+                where : {
+                    id: id
+                }
+            }); 
+
+            await tsx.letter.update({
+                where: {
+                    id: result.id
+                },
+                data: {
+                    status: StatusOfSending.SENDING
+                }
+            });
+            
+            return result;
+        }) 
 
         return result.id;
     }

@@ -71,7 +71,8 @@ model Letter {
 }
 
 model LetterLogs {
-  letterId  String @id @map("letter_id")
+  id        String  @id @default(cuid())
+  letterId  String @map("letter_id")
   attempt   String
   requestId String @map("request_id")
   status    String
@@ -89,6 +90,7 @@ enum Cnabs {
 
 enum StatusOfSending {
   SENDING
+  SENT
   CANCELED
   PENDING
   COMPLETED

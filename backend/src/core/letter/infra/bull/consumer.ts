@@ -35,7 +35,7 @@ export class LetterConsumer implements OnModuleInit {
                 product: data.client.product
             });
         
-            await this.letterRepository.updateStatus(SendingLetterStatus.SENDING, {
+            await this.letterRepository.updateStatus(SendingLetterStatus.SENT, {
                 letterId: data.letterId,
                 responseAPI: response
             });
