@@ -28,7 +28,7 @@ export class LetterRepositoryImpl implements LetterRepository {
                     id: data.letterId
                 },
                 data: {
-                    status: status
+                    status: status as StatusOfSending
                 }
             });
         });
